@@ -11,7 +11,7 @@ DXM-generated experience.
 The Bynder Integration for DXM allows content authors to use a Bynder "aware" Component to enhance their digital
 experience.
 
-![Bynder Component](../../../images/screenshots/Bynder/bynder-component.png?raw=true "Bynder Component")
+![Bynder Component](../../images/screenshots/Bynder/bynder-component.png?raw=true "Bynder Component")
 
 Upon click of the image, you will need to login to your Bynder account.
 
@@ -48,7 +48,7 @@ if (context.IsPublishing)
 ```
 ![Component Output Amends](../../images/screenshots/Bynder/component-output-amends.png?raw=true "Component Output Amends")
 
-Upload <a ref="./js/bynder-integration.js?raw=true" target="_blank">bynder-integration.js</a> from this repository into a suitable folder. No workflow will be required, as it doesn't
+Upload <a href="./js/bynder-integration.js?raw=true" target="_blank">bynder-integration.js</a> from this repository into a suitable folder. No workflow will be required, as it doesn't
 need to be published.
 ![Binder Integration JS](../../images/screenshots/Bynder/bynder-integration-js.png?raw=true "Binder Integration JS")
 
