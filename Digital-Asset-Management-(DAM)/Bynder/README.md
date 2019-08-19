@@ -1,4 +1,4 @@
-<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
+<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
 
 #Bynder Integration for DXM
 <a href="https://www.bynder.com/en/" target="_blank">Bynder's</a> digital asset management solution improves your
@@ -11,7 +11,7 @@ DXM-generated experience.
 The Bynder Integration for DXM allows content authors to use a Bynder "aware" Component to enhance their digital
 experience.
 
-![Bynder Component](../../images/screenshots/bynder-component.png?raw=true "Bynder Component")
+![Bynder Component](../../../images/screenshots/bynder-component.png?raw=true "Bynder Component")
 
 Upon click of the image, you will need to login to your Bynder account.
 
