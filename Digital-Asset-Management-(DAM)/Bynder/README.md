@@ -1,13 +1,13 @@
 <a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
 
-#Bynder Integration for DXM
+# Bynder Integration for DXM
 <a href="https://www.bynder.com/en/" target="_blank">Bynder's</a> digital asset management solution improves your
 digital asset flow from creation to approval, to deliver consistent content across all of your channels.
 
 This integration allows a DXM content author to use a Draggable-Component, populated by Bynder, to be used within a
 DXM-generated experience.
 
-##Capabilities
+## Capabilities
 The Bynder Integration for DXM allows content authors to use a Bynder "aware" Component to enhance their digital
 experience.
 
@@ -30,7 +30,7 @@ from the Bynder Compact View.
 
 You can now save the Asset as normal and the image will be persisted on the Asset.
 
-##Configuration Steps
+## Configuration Steps
 Within your Project, create a new component called "Bynder Image" and set the following pattern:
 ```
 <img src="" alt="Select Bynder image" style="visibility: hidden" data-cp-integration="bynder" />
