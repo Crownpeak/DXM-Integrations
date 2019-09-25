@@ -99,7 +99,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
     _N.B._, you will need a Site selected before you can save. If you do not have a site defined in Salesforce, then
     apply the following steps to create a site placeholder.
     
- 5) Create a Site by entering ‘**Site**’ in the Quick Find box or navigating to ***Build -> Develop -> **Sites**
+ 5) Create a Site by entering ‘**Site**’ in the Quick Find box or navigating to **Build -> Develop -> Sites**
     
     ![Create Site](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-create-site.png?raw=true "Create Site")
  
@@ -195,7 +195,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  
  Set your Live Agent status to ‘**Online**’.
  
- [Live Agent Status](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-status.png?raw=true "Live Agent Status")
+ ![Live Agent Status](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-status.png?raw=true "Live Agent Status")
  
 ### Implementing Live Agent in Crownpeak DXM
 
@@ -238,7 +238,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  7) If you now set Live Agent to ‘Online’ in Salesforce you will see the Online button become active in your page and
  you can start the chat. You may need to refresh the view to see the updated status.
  
-    [Live Agent Working](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-working.png?raw=true "Live Agent Working")
+    ![Live Agent Working](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-working.png?raw=true "Live Agent Working")
 
 ## Considerations
 
