@@ -1,4 +1,4 @@
-<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
+<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
 
 # Salesforce Live Agent Integration for Crownpeak DXM
 <a href="https://www.salesforce.com/" target="_blank">Salesforce's</a> Live Agent allows you to initiate a personalised
@@ -21,28 +21,28 @@ and login to your account.
  1) In Salesforce, go to **My Development Account**. Open the users account that you want to act as an Agent.
 **Administer -> Manage Users -> Users -> Edit**
 
-    ![Salesforce Find User](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-list-users.png?raw=true "Salesforce Find User")
+    ![Salesforce Find User](../../images/screenshots/Salesforce-Service-Cloud/live-agent-list-users.png?raw=true "Salesforce Find User")
 
     _N.B._, Note, you may also use the Quick Find box to locate the menu option you require at any time:
 
-    ![Salesforce Search](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-search.png?raw=true "Salesforce Search")
+    ![Salesforce Search](../../images/screenshots/Salesforce-Service-Cloud/live-agent-search.png?raw=true "Salesforce Search")
 
  2) Type ‘**Users**’ in the above and the menu option will be found.
 
  3) Once you have selected the desired agent’s user account, switch on the option for them to access the function in
 Salesforce.
 
-    ![Configure User](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-configure-user.png?raw=true "Configure User")
+    ![Configure User](../../images/screenshots/Salesforce-Service-Cloud/live-agent-configure-user.png?raw=true "Configure User")
 
  4) Save the user profile.
 
  5) In the Quick Find box, type ‘**Skill**’.
 
-    ![Salesforce Search Skills](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-search-skills.png?raw=true "Salesforce Search Skills")
+    ![Salesforce Search Skills](../../images/screenshots/Salesforce-Service-Cloud/live-agent-search-skills.png?raw=true "Salesforce Search Skills")
 
  6) Click on ‘**Skills**’. In the Skills window, click on ‘**New**’.
 
-    ![Salesforce Configure Skill](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-configure-skill.png?raw=true "Salesforce Create Skill")
+    ![Salesforce Configure Skill](../../images/screenshots/Salesforce-Service-Cloud/live-agent-configure-skill.png?raw=true "Salesforce Create Skill")
 
     _N.B._, you will only see users that have the Live Agent check box selected in their profile in the Available Users box.
     We did this in the previous step. Your Profile list may be different to the one above as it will be specific to your
@@ -56,19 +56,19 @@ editorial team the option to change the button choice.
 
  1) In the Quick Find bar enter ‘Static Resources’.
 
-    ![Salesforce Search Static Resources](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-search-static-resources.png?raw=true "Salesforce Search Static Resources")
+    ![Salesforce Search Static Resources](../../images/screenshots/Salesforce-Service-Cloud/live-agent-search-static-resources.png?raw=true "Salesforce Search Static Resources")
 
  2) Open Static Resources.
 
  3) Click on ‘New’.
  
-     ![Salesforce New Static Resource](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-new-static-resource.png?raw=true "Salesforce New Static Resource")
+     ![Salesforce New Static Resource](../../images/screenshots/Salesforce-Service-Cloud/live-agent-new-static-resource.png?raw=true "Salesforce New Static Resource")
 
  4) Upload an offline button of your choice from your local desktop and save the resource.
  
  5) Now repeat this step for an online button. 
 
-    ![Salesforce View Static Resources](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-view-static-resources.png?raw=true "Salesforce View Static Resources")
+    ![Salesforce View Static Resources](../../images/screenshots/Salesforce-Service-Cloud/live-agent-view-static-resources.png?raw=true "Salesforce View Static Resources")
 
 You now have two buttons available for your site to show when an agent is online and offline. These buttons will be
 fetched by the imported JavaScript that you will create later in this tutorial. 
@@ -83,16 +83,16 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  
     1) **Basic Information**
     
-       ![Basic Information](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-basic-information.png?raw=true "Basic Information")
+       ![Basic Information](../../images/screenshots/Salesforce-Service-Cloud/live-agent-basic-information.png?raw=true "Basic Information")
     2) **Routing Information** - To guide the site visitor to the Agent with skills to address their matter. 
     
-       ![Routing Information](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-routing-information.png?raw=true "Routing Information")
+       ![Routing Information](../../images/screenshots/Salesforce-Service-Cloud/live-agent-routing-information.png?raw=true "Routing Information")
     3) **Chat Button Customization**. Optional, assign the buttons uploaded previously to Salesforce to be used on the
     site. Note, you can also define other options, such as a Pre-chat Form (which you can use to generate an instant
     lead in Salesforce) and Post conversation URLs (to direct customers to where you want them to go after a chat
     session is complete i.e. a survey) etc. 
     
-       ![Chat Button Customization](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-chat-button-customization.png?raw=true "Chat Button Customization")
+       ![Chat Button Customization](../../images/screenshots/Salesforce-Service-Cloud/live-agent-chat-button-customization.png?raw=true "Chat Button Customization")
  
  4) Save the Chat Button options.
  
@@ -101,7 +101,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
     
  5) Create a Site by entering ‘**Site**’ in the Quick Find box or navigating to **Build -> Develop -> Sites**
     
-    ![Create Site](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-create-site.png?raw=true "Create Site")
+    ![Create Site](../../images/screenshots/Salesforce-Service-Cloud/live-agent-create-site.png?raw=true "Create Site")
  
  6) Complete the requisite entries in the Site similar to those shown above.
  
@@ -120,7 +120,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  3) Scroll to the bottom and you will see your Chat Button Code Script, copy this script to your clipboard for later
     use.
  
-    ![Chat Button Code](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-chat-button-code.png?raw=true "Chat Button Code")
+    ![Chat Button Code](../../images/screenshots/Salesforce-Service-Cloud/live-agent-chat-button-code.png?raw=true "Chat Button Code")
  
 ### Create a new Agent
 
@@ -130,7 +130,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  
  3) Setup the client to your needs. In this example, the default set up was used.
     
-    ![Live Agent Configuration](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-configuration.png?raw=true "Live Agent Configuration")
+    ![Live Agent Configuration](../../images/screenshots/Salesforce-Service-Cloud/live-agent-configuration.png?raw=true "Live Agent Configuration")
     
     _N.B._, in the above configuration, you can setup how your Live Agent will function whilst in session. You can find
     more details at <a href="https://help.salesforce.com/articleView?id=live_agent_configuration_settings.htm&type=5" target="_blank">https://help.salesforce.com/articleView?id=live_agent_configuration_settings.htm&type=5</a>
@@ -145,13 +145,13 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  
  3) Create your Live Agent Deployment and Save.
     
-    ![Live Agent Deployment](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-deployment.png?raw=true "Live Agent Deployment")
+    ![Live Agent Deployment](../../images/screenshots/Salesforce-Service-Cloud/live-agent-deployment.png?raw=true "Live Agent Deployment")
  
  4) Open the Live Agent Deployment.
  
  5) Copy the Script Tags to your clipboard, for later use.
     
-    ![Live Agent Deployment Code](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-deployment-code.png?raw=true "Live Agent Deployment Code")
+    ![Live Agent Deployment Code](../../images/screenshots/Salesforce-Service-Cloud/live-agent-deployment-code.png?raw=true "Live Agent Deployment Code")
     
     _N.B._, the deployment JavaScript that will control Live Agent functionality on your site will be stored in
     Salesforce and accessed through the Deployment Code.
@@ -166,16 +166,16 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  
  2) Click the ‘**New**’ button.
     
-    ![Live Agent New App](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-new-app.png?raw=true "Live Agent New App")
+    ![Live Agent New App](../../images/screenshots/Salesforce-Service-Cloud/live-agent-new-app.png?raw=true "Live Agent New App")
  
  3) Create your App using the default settings
     
-    ![Live Agent App Default Settings](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-app-settings.png?raw=true "Live Agent App Default Settings")
+    ![Live Agent App Default Settings](../../images/screenshots/Salesforce-Service-Cloud/live-agent-app-settings.png?raw=true "Live Agent App Default Settings")
     
     Map your Salesforce data that you want to associate with Live Agent. In this example, we are linking the chat to
     Lead generation only. 
     
-    ![Map Data](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-map-data.png?raw=true "Map Data")      
+    ![Map Data](../../images/screenshots/Salesforce-Service-Cloud/live-agent-map-data.png?raw=true "Map Data")      
  
  4) Save.
  
@@ -187,15 +187,15 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  To access Live Agent, login as a user you defined as being a Live Agent. In the top right menu switch to your App.
  e.g., ‘**Marketing Leads with LiveAgent**’ that we created above.
  
- ![Access App](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-access-app.png?raw=true "Access App")
+ ![Access App](../../images/screenshots/Salesforce-Service-Cloud/live-agent-access-app.png?raw=true "Access App")
  
  At the bottom right of your new window you will see the Live Agent button. Click this button.
  
- ![Live Agent Button](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-button.png?raw=true "Live Agent Button")
+ ![Live Agent Button](../../images/screenshots/Salesforce-Service-Cloud/live-agent-button.png?raw=true "Live Agent Button")
  
  Set your Live Agent status to ‘**Online**’.
  
- ![Live Agent Status](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-status.png?raw=true "Live Agent Status")
+ ![Live Agent Status](../../images/screenshots/Salesforce-Service-Cloud/live-agent-status.png?raw=true "Live Agent Status")
  
 ### Implementing Live Agent in Crownpeak DXM
 
@@ -238,7 +238,7 @@ fetched by the imported JavaScript that you will create later in this tutorial.
  7) If you now set Live Agent to ‘Online’ in Salesforce you will see the Online button become active in your page and
  you can start the chat. You may need to refresh the view to see the updated status.
  
-    ![Live Agent Working](../../../../images/screenshots/Salesforce-Service-Cloud/live-agent-working.png?raw=true "Live Agent Working")
+    ![Live Agent Working](../../images/screenshots/Salesforce-Service-Cloud/live-agent-working.png?raw=true "Live Agent Working")
 
 ## Considerations
 
