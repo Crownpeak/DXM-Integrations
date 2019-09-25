@@ -11,6 +11,12 @@ when and where they want to place the Live Agent function in their sites. We wil
 account, however, you will require a licenced version of Salesforce Live Agent to apply the exact same steps in your own
 environments. 
 
+## Capabilities
+Enables the deployment of Salesforce Live Agent into a Asset (page) managed by Crownpeak DXM, with full preview
+capabilities.
+
+![Live Agent in DXM Preview](../../images/screenshots/Salesforce-Service-Cloud/live-agent-screenshot-1.png?raw=true "Live Agent in DXM Preview")
+
 ## Configuration Steps
 
 ### Setting up Salesforce
