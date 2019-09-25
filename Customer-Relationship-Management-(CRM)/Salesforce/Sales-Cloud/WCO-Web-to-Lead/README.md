@@ -11,6 +11,22 @@ allows you to personalise content based on lead data.
 
 ![WCO/Salesforce Logical Diagram](../../../../images/screenshots/Salesforce-Sales-Cloud/wco-logical-diagram.png?raw=true "WCO/Salesforce Logical Diagram")
 
+## Capabilities
+
+Use Crownpeak WCO to personalize a dyanamic page experience, and deliver the content into Salesforce Sales Cloud.
+
+![DXM Personalized Form](../../../../images/screenshots/Salesforce-Sales-Cloud/wco-screenshot-1.png?raw=true "DXM Personalized Form")
+
+DXM Asset in Preview Mode, showing WCO Targeting Groups, allowing author to tailor the message to each user.
+
+![DXM Delivered Page](../../../../images/screenshots/Salesforce-Sales-Cloud/wco-screenshot-2.png?raw=true "DXM Delivered Page")
+
+Page published via DXM, rendering form to end-user. Page is currently showing content for the 'anonymous' visitor group.
+
+![Salesforce Leads](../../../../images/screenshots/Salesforce-Sales-Cloud/wco-screenshot-3.png?raw=true "Salesforce Leads")
+
+Upon form submission, lead data is transmitted securely to Salesforce Sales Cloud (CRM).
+
 ## Configuration Steps
 Open your Salesforce account and find your Organisational ID. In the Salesforce Quick Find box type ‘Company’.
 
