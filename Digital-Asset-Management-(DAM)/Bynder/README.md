@@ -7,6 +7,8 @@ digital asset flow from creation to approval, to deliver consistent content acro
 This integration allows a DXM content author to use a Draggable-Component, populated by Bynder, to be used within a
 DXM-generated experience.
 
+<a href="https://view.vzaar.com/20864268/player" target="_blank">![Bynder Integration Video](../../images/screenshots/Bynder/bynder-video-title.png?raw=true "Bynder Integration Video")</a>
+
 ## Capabilities
 The Bynder Integration for DXM allows content authors to use a Bynder "aware" Component to enhance their digital
 experience.
