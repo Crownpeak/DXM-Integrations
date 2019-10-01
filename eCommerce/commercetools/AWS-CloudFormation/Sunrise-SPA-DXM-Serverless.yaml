@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS Resources to deliver a static website via S3, CloudFront & Lambda@Edge
+  (with EdgeAngular)
+Parameters:
+  FQDN:
+    Type: String
+    Description: FQDN of website.
+    Default: commercetools-sunrise.sales-engineering.cprd.io
+  AcmCertificateArn:
+    Type: String
+    Description: ARN of the certificate to use for the CloudFront distribution.
+Resources:
+  CloudFrontDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref FQDN
+        DefaultCacheBehavior:
+          Compress: true
+          ForwardedValues:
+            QueryString: true
+            Headers:
+              - Authorization
+          TargetOriginId: !Join [ "", [ !Ref S3Bucket, ".s3.amazonaws.com" ] ]
+          ViewerProtocolPolicy: redirect-to-https
+          MinTTL: 0
+          AllowedMethods:
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          LambdaFunctionAssociations:
+            - EventType: origin-request
+              LambdaFunctionARN: !Ref EdgeAngularLambdaFunctionVersion
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+          - DomainName:
+              !Join [ "", [ !Ref S3Bucket, ".s3.amazonaws.com" ] ]
+            Id: !Join [ "", [ !Ref S3Bucket, ".s3.amazonaws.com" ] ]
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join [ "", [ "origin-access-identity/cloudfront/", !Ref CloudFrontOriginAccessIdentity ] ]
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          MinimumProtocolVersion: TLSv1.1_2016
+          SslSupportMethod: sni-only
+      Tags:
+        - Key: Domain
+          Value: !Ref FQDN
+  CloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub 'CloudFront Origin Access Identity for ${FQDN}'
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Domain
+          Value: !Ref FQDN
+  S3BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join [ "", [ "arn:aws:s3:::", !Ref S3Bucket, "/*" ] ]
+            Principal:
+              CanonicalUser: !GetAtt
+                - CloudFrontOriginAccessIdentity
+                - S3CanonicalUserId
+  OriginRequestLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: >-
+        EdgeAngular (see https://github.com/ptylr/Lambda-at-Edge/tree/master/EdgeAngular)
+      Code:
+        ZipFile: |
+          'use strict';
+          module.exports.handler = (event, context, callback) => {
+              const defaultPath = 'index.html';
+              const request = event.Records[0].cf.request;
+              const isFile = uri => /\/[^/]+\.[^/]+$/.test(uri);
+              if(!isFile(request.uri) && request.uri.indexOf(defaultPath) < 0)
+              {
+                  const olduri = request.uri;
+                  request.uri = '/' + defaultPath;
+                  console.log('Request for [' + olduri + '], rewritten to [' + request.uri + ']');
+              }
+              callback(null, request);
+          };
+      Handler: index.handler
+      MemorySize: 128
+      Role: !Sub '${OriginRequestLambdaFunctionExecutionRole.Arn}'
+      Runtime: nodejs8.10
+      Tags:
+        - Key: Domain
+          Value: !Ref FQDN
+  EdgeAngularLambdaFunctionVersion:
+    Type: 'AWS::Lambda::Version'
+    Properties:
+      FunctionName: !Ref OriginRequestLambdaFunction
+      Description: !Sub 'EdgeAngular for ${FQDN}'
+  OriginRequestLambdaFunctionExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - edgelambda.amazonaws.com
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
