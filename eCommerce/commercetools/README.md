@@ -6,7 +6,7 @@
 Visionaries. Increase business agility and innovate across new business models. Build your commerce architecture of the
 future with the most flexible, cloud based commerce API solution on the market.
 
-This integration allows a content author to fully-manage the non-ecommerce/product managemenbt experience of the
+This integration allows a content author to fully-manage the non-ecommerce/product management experience of the
 commercetools Sunrise demonstration site from within DXM.
 
 ## Capabilities
@@ -53,7 +53,7 @@ Published commercetools Demonstration Site to AWS Serverless configuration.
     ![Crownpeak-Content-Xcelerator℠ - Authentication](../../images/screenshots/commercetools/content-xcelerator-authentication.png?raw=true "Crownpeak-Content-Xcelerator℠ - Authentication")
          
  5) Select <a href="./Crownpeak-Content-Xcelerator℠/Sunrise-SPA-DXM.xml" target="_blank">Sunrise-SPA-DXM.xml</a> and pick
-    all Assets under the commercetools site root.
+    the commercetools root folder.
     
     ![Crownpeak-Content-Xcelerator℠ - Pick Assets](../../images/screenshots/commercetools/content-xcelerator-export-settings.png?raw=true "Crownpeak-Content-Xcelerator℠ - Pick Assets")
  
@@ -81,7 +81,7 @@ We recommend using the steps above, combined with <a href="https://github.com/cr
 to install Sunrise SPA into DXM - however, if you do choose to install manually, you may follow the steps below.
 
  1) Clone/download <a href="https://github.com/commercetools/sunrise-spa" target="_blank">Sunrise SPA</a> from
-    commercetool's GitHub repository.
+    commercetools' GitHub repository.
     
  2) Follow all installation/configuration instructions in the <a href="https://github.com/commercetools/sunrise-spa" target="_blank">Sunrise SPA</a>
     repository.
@@ -99,7 +99,7 @@ to install Sunrise SPA into DXM - however, if you do choose to install manually,
     
  6) Upload the contents of **/dist/** within your site into a new Folder within DXM.
 
- 7) Create new **Project** in DXM to hold Templates & Library Files. Ensure that Project is created include **Component Library.**
+ 7) Create new **Project** in DXM to hold Templates & Library Files. Ensure that Project is created inside **Component Library.**
  
  8) Create New **Library Files**, per contents of <a href="./Library/" target="_blank">./Library/</a>
  
