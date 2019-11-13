@@ -34,7 +34,9 @@ Resources:
             - GET
           LambdaFunctionAssociations:
             - EventType: origin-request
-              LambdaFunctionARN: !Ref EdgeAngularLambdaFunctionVersion
+              LambdaFunctionARN: !Ref OriginRequestLambdaFunctionVersion
+            - EventType: origin-response
+              LambdaFunctionARN: !Ref OriginResponseLambdaFunctionVersion
         DefaultRootObject: index.html
         CustomErrorResponses:
           - ErrorCachingMinTTL: 0
@@ -92,35 +94,43 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       Description: >-
-        EdgeAngular (see https://github.com/ptylr/Lambda-at-Edge/tree/master/EdgeAngular)
+        EdgeServices - A Pair of Lambda@Edge Functions for Executing Common Operations on Request (see https://github.com/ptylr/Lambda-at-Edge/tree/master/EdgeServices)
       Code:
-        ZipFile: |
-          'use strict';
-          module.exports.handler = (event, context, callback) => {
-              const defaultPath = 'index.html';
-              const request = event.Records[0].cf.request;
-              const isFile = uri => /\/[^/]+\.[^/]+$/.test(uri);
-              if(!isFile(request.uri) && request.uri.indexOf(defaultPath) < 0)
-              {
-                  const olduri = request.uri;
-                  request.uri = '/' + defaultPath;
-                  console.log('Request for [' + olduri + '], rewritten to [' + request.uri + ']');
-              }
-              callback(null, request);
-          };
-      Handler: index.handler
+        S3Bucket: lambda-ptylr-com
+        S3Key: EdgeServices-OriginRequest.zip
+      Handler: handler.handler
       MemorySize: 128
-      Role: !Sub '${OriginRequestLambdaFunctionExecutionRole.Arn}'
-      Runtime: nodejs8.10
+      Role: !Sub '${LambdaFunctionExecutionRole.Arn}'
+      Runtime: nodejs10.x
       Tags:
         - Key: Domain
           Value: !Ref FQDN
-  EdgeAngularLambdaFunctionVersion:
+  OriginRequestLambdaFunctionVersion:
     Type: 'AWS::Lambda::Version'
     Properties:
       FunctionName: !Ref OriginRequestLambdaFunction
-      Description: !Sub 'EdgeAngular for ${FQDN}'
-  OriginRequestLambdaFunctionExecutionRole:
+      Description: !Sub 'EdgeServices-OriginRequest for ${FQDN}'
+  OriginResponseLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: >-
+        EdgeServices - A Pair of Lambda@Edge Functions for Executing Common Operations on Request (see https://github.com/ptylr/Lambda-at-Edge/tree/master/EdgeServices)
+      Code:
+        S3Bucket: lambda-ptylr-com
+        S3Key: EdgeServices-OriginResponse.zip
+      Handler: handler.handler
+      MemorySize: 128
+      Role: !Sub '${LambdaFunctionExecutionRole.Arn}'
+      Runtime: nodejs10.x
+      Tags:
+        - Key: Domain
+          Value: !Ref FQDN
+  OriginResponseLambdaFunctionVersion:
+    Type: 'AWS::Lambda::Version'
+    Properties:
+      FunctionName: !Ref OriginResponseLambdaFunction
+      Description: !Sub 'EdgeServices-OriginResponse for ${FQDN}'
+  LambdaFunctionExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -135,3 +145,22 @@ Resources:
               - 'sts:AssumeRole'
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+  LambdaFunctionExecutionPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: IAMP-LambdaFunctionExecutionPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:ListAllMyBuckets'
+              - 's3:GetBucketLocation'
+            Resource: '*'
+          - Effect: Allow
+            Action: 's3:GetObject'
+            Resource:
+              - !Join [ "", [ "arn:aws:s3:::", !Ref S3Bucket ] ]
+              - !Join [ "", [ "arn:aws:s3:::", !Ref S3Bucket, "/*" ] ]
+      Roles:
+        - !Ref LambdaFunctionExecutionRole
