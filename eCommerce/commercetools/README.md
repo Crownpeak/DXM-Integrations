@@ -117,7 +117,7 @@ the public-facing experience within a serverless AWS environment (S3, CloudFront
  
  2) Select the **Region** that you wish to deploy the CloudFormation Stack into and click **Create Stack**.
  
- 3) Upload <a href="./AWS-CloudFormation/Sunrise-SPA-DXM-Serverless.yaml" target="_blank">Sunrise-SPA-DXM-Serverless.yaml</a>.
+ 3) Upload <a href="https://github.com/ptylr/Lambda-at-Edge/blob/master/CloudFormation/AWS-Serverless.yaml" target="_blank">AWS-Serverless.yaml</a>.
  
  4) Give the **Stack** a name (_TIP_: I use the Fully-Qualified Domain Name (FQDN), to make it easy to find in future).
  
@@ -168,6 +168,17 @@ the public-facing experience within a serverless AWS environment (S3, CloudFront
  9) Create an **IAM User**, inheriting the **IAM Policy**. Configure **publishing** from within DXM, using the
     **Export S3** settings.
     
- 10) Browse to your site.
+ 10) Deploy config.json to the root of the S3 Bucket, with the following contents (to control EdgeServices Lambda Functions):
+    
+    ```
+    {
+       "defaultDocument": "index.html",
+       "rewrites": [
+         ["%{REQUEST_PATH} !\\/[^/]+\\.[^/]+$", "%{REQUEST_PATH} !index\\.html", "^(.*)$ /index.html"]
+       ]
+    }
+    ```
+    
+ 11) Browse to your site.
  
    ![Published Sunrise SPA - on AWS Serverless](../../images/screenshots/commercetools/commercetools-screenshot-4.png?raw=true "Published Sunrise SPA - on AWS Serverless")
