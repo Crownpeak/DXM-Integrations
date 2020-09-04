@@ -1,4 +1,4 @@
-<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
+<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
 
 # commercetools Integration for DXM
 
