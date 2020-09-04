@@ -1,0 +1,13 @@
+fragment AddressFields on Address {
+  firstName
+  lastName
+  streetName
+  additionalStreetInfo
+  postalCode
+  city
+  country
+  contactInfo {
+    phone
+    email
+  }
+}

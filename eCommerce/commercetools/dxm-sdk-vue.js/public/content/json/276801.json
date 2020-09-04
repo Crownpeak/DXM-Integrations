@@ -1,0 +1,80 @@
+{
+  "responseHeader": {
+    "zkConnected": true,
+    "status": 0,
+    "QTime": 1,
+    "params": {
+      "q": "id:276801",
+      "fl": "id,custom_t_json:[json]",
+      "wt": "json"
+    }
+  },
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "docs": [
+      {
+        "id": "276801",
+        "custom_t_json": {
+          "TheHeader": {},
+          "Banner": [
+            {
+              "BannerItem": {
+                "Title_1": "MID-SEASON SALE",
+                "Title_2": "UP TO 50%",
+                "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/banner3.jpg",
+                "Link": "product",
+                "Category_Slug": "sale",
+                "Button_Text": "SHOP NOW"
+              }
+            },
+            {
+              "BannerItem": {
+                "Title_1": "CHECK OUT",
+                "Title_2": "NEW COLLECTION",
+                "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/banner8.jpg",
+                "Link": "product",
+                "Category_Slug": "sale",
+                "Button_Text": "SHOP NOW"
+              }
+            }
+          ],
+          "TheFooter": {},
+          "ProductCategory": [
+            {
+              "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/jeans1.jpg",
+              "Title": "WOMEN JEANS",
+              "link": "products",
+              "category_slug": "women-clothing-jeans"
+            },
+            {
+              "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/sho3.jpg",
+              "Title": "SNEAKERS",
+              "link": "products",
+              "category_slug": "men-shoes-sneakers"
+            },
+            {
+              "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/s3.jpg",
+              "Title": "SWIMWEAR",
+              "link": "products",
+              "category_slug": "swimwear"
+            }
+          ],
+          "FooterBit": {},
+          "DropZones": {
+            "productCategoryDZ": [
+              {
+                "ProductCategory": {
+                  "Image": "https:\/\/s3.surety.financial.cprd.io\/Skunks-Works\/commercetools-Vue-SDK\/_Assets\/images\/acc.jpg",
+                  "Title": "ACCESSORIES",
+                  "link": "products",
+                  "category_slug": "accessories"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

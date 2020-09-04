@@ -1,0 +1,26 @@
+en:
+  title: Your order details
+  orderNumber: Order Number
+  date: Date
+  shippingAddress: Shipping address
+  billingAddress: Billing address
+  shippingMethod: Shipping method
+  paymentDetails: Payment details
+  subtotal: Subtotal
+  shipping: Shipping
+  appliedDiscounts: Applied discounts
+  total: Total
+  notFound: Order not found
+de:
+  title: Ihre Bestelldetails
+  orderNumber: Bestellnummer
+  date: Datum
+  shippingAddress: Lieferanschrift
+  billingAddress: Rechnungsadresse
+  shippingMethod: Versandart
+  paymentDetails: Zahlungsdetails
+  subtotal: Zwischensumme
+  shipping: Versand
+  appliedDiscounts: Angewandte Rabatte
+  total: Gesamtpreis
+  notFound: Bestellung nicht gefunden
