@@ -1,4 +1,4 @@
-<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
+<a href="https://www.crownpeak.com/" target="_blank">![Crownpeak Logo](../../../../images/logo/crownpeak-logo.png?raw=true "Crownpeak Logo")</a>
 
 # commercetools Integration for DXM
 
@@ -19,19 +19,19 @@ manifest is included, to allow you to provision Sunrise SPA within DXM in minute
 Optionally, an Amazon Web Services (AWS) CloudFormation Template is included within this repo, to allow rapid provisioning of
 the public-facing experience within a serverless AWS environment.
 
-![Sunrise SPA Preview in DXM](../../images/screenshots/commercetools/commercetools-screenshot-1.png?raw=true "Sunrise SPA Preview in DXM")
+![Sunrise SPA Preview in DXM](../../../images/screenshots/commercetools/commercetools-screenshot-1.png?raw=true "Sunrise SPA Preview in DXM")
 
 Sunrise SPA preview within DXM Interface.
 
-![Sunrise SPA Inline in DXM](../../images/screenshots/commercetools/commercetools-screenshot-2.png?raw=true "Sunrise SPA Inline in DXM")
+![Sunrise SPA Inline in DXM](../../../images/screenshots/commercetools/commercetools-screenshot-2.png?raw=true "Sunrise SPA Inline in DXM")
 
 Images swapped from items within DXM DAM, simply using Drag & Drop to replace the default ones.
 
-![Sunrise SPA Inline Showing Footer Links Changed](../../images/screenshots/commercetools/commercetools-screenshot-3.png?raw=true "Sunrise SPA Inline Showing Footer Links Changed")
+![Sunrise SPA Inline Showing Footer Links Changed](../../../images/screenshots/commercetools/commercetools-screenshot-3.png?raw=true "Sunrise SPA Inline Showing Footer Links Changed")
 
 Footer links changed, adding Crownpeak link.
 
-![Published Sunrise SPA - on AWS Serverless](../../images/screenshots/commercetools/commercetools-screenshot-4.png?raw=true "Published Sunrise SPA - on AWS Serverless")
+![Published Sunrise SPA - on AWS Serverless](../../../images/screenshots/commercetools/commercetools-screenshot-4.png?raw=true "Published Sunrise SPA - on AWS Serverless")
 
 Published commercetools Demonstration Site to AWS Serverless configuration.
 
@@ -45,17 +45,17 @@ Published commercetools Demonstration Site to AWS Serverless configuration.
  3) Open <a href="https://github.com/crownpeak/content-xcelerator" target="_blank">Crownpeak Content Xcelerator℠</a> and
     select **Import Data**.
  
-    ![Crownpeak-Content-Xcelerator℠ - Import Data](../../images/screenshots/commercetools/content-xcelerator-import-data.png?raw=true "Crownpeak-Content-Xcelerator℠ - Import Data")
+    ![Crownpeak-Content-Xcelerator℠ - Import Data](../../../images/screenshots/commercetools/content-xcelerator-import-data.png?raw=true "Crownpeak-Content-Xcelerator℠ - Import Data")
  
  4) Complete information within "Import" screen with your details (see the instructions on the <a href="https://github.com/crownpeak/content-xcelerator" target="_blank">Crownpeak Content Xcelerator℠</a>
     if you are unsure).
     
-    ![Crownpeak-Content-Xcelerator℠ - Authentication](../../images/screenshots/commercetools/content-xcelerator-authentication.png?raw=true "Crownpeak-Content-Xcelerator℠ - Authentication")
+    ![Crownpeak-Content-Xcelerator℠ - Authentication](../../../images/screenshots/commercetools/content-xcelerator-authentication.png?raw=true "Crownpeak-Content-Xcelerator℠ - Authentication")
          
  5) Select <a href="./Crownpeak-Content-Xcelerator℠/Sunrise-SPA-DXM.xml" target="_blank">Sunrise-SPA-DXM.xml</a> and pick
     the commercetools root folder.
     
-    ![Crownpeak-Content-Xcelerator℠ - Pick Assets](../../images/screenshots/commercetools/content-xcelerator-export-settings.png?raw=true "Crownpeak-Content-Xcelerator℠ - Pick Assets")
+    ![Crownpeak-Content-Xcelerator℠ - Pick Assets](../../../images/screenshots/commercetools/content-xcelerator-export-settings.png?raw=true "Crownpeak-Content-Xcelerator℠ - Pick Assets")
  
  6) Click **Next** and wait for any **Problems** to be identified. Assuming none are, click **Next** again.
  
@@ -63,16 +63,16 @@ Published commercetools Demonstration Site to AWS Serverless configuration.
  
     (_N.B._ A top-level folder called commercetools will be created automatically.)
  
-    ![Crownpeak-Content-Xcelerator℠ - Choose Folder Path](../../images/screenshots/commercetools/content-xcelerator-top-folder.png?raw=true "Crownpeak-Content-Xcelerator℠ - Choose Folder Path")
+    ![Crownpeak-Content-Xcelerator℠ - Choose Folder Path](../../../images/screenshots/commercetools/content-xcelerator-top-folder.png?raw=true "Crownpeak-Content-Xcelerator℠ - Choose Folder Path")
         
  8) Wait for <a href="./Crownpeak-Content-Xcelerator℠/Sunrise-SPA-DXM.xml" target="_blank">Sunrise-SPA-DXM.xml</a> to
     be deployed.
     
-    ![Sunrise SPA Import Complete](../../images/screenshots/commercetools/content-xcelerator-import-complete.png?raw=true "Sunrise SPA Import Complete")    
+    ![Sunrise SPA Import Complete](../../../images/screenshots/commercetools/content-xcelerator-import-complete.png?raw=true "Sunrise SPA Import Complete")    
     
  9) Browse to your deployed Sunrise SPA site and open the **Home** Asset in Preview Mode.
  
-    ![Sunrise SPA Preview in DXM](../../images/screenshots/commercetools/commercetools-screenshot-1.png?raw=true "Sunrise SPA Preview in DXM")
+    ![Sunrise SPA Preview in DXM](../../../images/screenshots/commercetools/commercetools-screenshot-1.png?raw=true "Sunrise SPA Preview in DXM")
 
  10) Finally, configure your **publishing** requirements within DXM.
 
@@ -181,4 +181,4 @@ the public-facing experience within a serverless AWS environment (S3, CloudFront
     
  11) Browse to your site.
  
-   ![Published Sunrise SPA - on AWS Serverless](../../images/screenshots/commercetools/commercetools-screenshot-4.png?raw=true "Published Sunrise SPA - on AWS Serverless")
+   ![Published Sunrise SPA - on AWS Serverless](../../../images/screenshots/commercetools/commercetools-screenshot-4.png?raw=true "Published Sunrise SPA - on AWS Serverless")
