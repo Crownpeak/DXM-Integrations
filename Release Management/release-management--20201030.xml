@@ -1,0 +1,1152 @@
+<?xml version="1.0"?>
+<assets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Crownpeak/Content-Xcelerator/master/Crownpeak%20Content%20Xcelerator%20Migrator/Content-Xcelerator.xsd">
+  <folder>
+    <id>208279</id>
+    <label>Release Management</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management</path>
+    <folder_id>0</folder_id>
+    <subType>128</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Site</intendedType>
+    <type>4</type>
+  </folder>
+  <folder>
+    <id>208303</id>
+    <label>_Releases</label>
+    <model_id>208301</model_id>
+    <model_path>/Release Management/Project/Models/Releases/</model_path>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/_Releases</path>
+    <folder_id>208279</folder_id>
+    <subType>
+    </subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Folder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208304</id>
+    <label>Release Configuration</label>
+    <template_id>208287</template_id>
+    <template_path>/Release Management/Project/Templates/Release Configuration/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/_Releases/Release Configuration</path>
+    <folder_id>208303</folder_id>
+    <subType>0</subType>
+    <templateSubType>512</templateSubType>
+    <intendedType>ContentAsset</intendedType>
+    <type>2</type>
+    <fields />
+  </asset>
+  <folder>
+    <id>208280</id>
+    <label>Project</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project</path>
+    <folder_id>208279</folder_id>
+    <subType>32</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Project</intendedType>
+    <type>4</type>
+  </folder>
+  <folder>
+    <id>208285</id>
+    <label>Models</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Models</path>
+    <folder_id>208280</folder_id>
+    <subType>4096</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Model, Folder</intendedType>
+    <type>4</type>
+  </folder>
+  <folder>
+    <id>208301</id>
+    <label>Releases</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Models/Releases</path>
+    <folder_id>208285</folder_id>
+    <subType>
+    </subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Model, Folder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208302</id>
+    <label>Release</label>
+    <template_id>208291</template_id>
+    <template_path>/Release Management/Project/Templates/Release/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>89</workflow_id>
+    <workflow_name>Release Workflow</workflow_name>
+    <status>780</status>
+    <status_name>Draft</status_name>
+    <path>/Release Management/Project/Models/Releases/Release</path>
+    <folder_id>208301</folder_id>
+    <subType>0</subType>
+    <templateSubType>512</templateSubType>
+    <intendedType>Model, ContentAsset</intendedType>
+    <type>2</type>
+    <fields />
+  </asset>
+  <folder>
+    <id>208282</id>
+    <label>Templates</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Templates</path>
+    <folder_id>208280</folder_id>
+    <subType>256</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>TemplatesFolder</intendedType>
+    <type>4</type>
+  </folder>
+  <folder>
+    <id>208291</id>
+    <label>Release</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Templates/Release</path>
+    <folder_id>208282</folder_id>
+    <subType>512</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>TemplateFolder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208322</id>
+    <label>filename.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release/filename.aspx</path>
+    <folder_id>208291</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.FilenameInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+context.PublishPath = "";
+%&gt;
+</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208292</id>
+    <label>input.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release/input.aspx</path>
+    <folder_id>208291</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.InputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.CustomLibrary" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+    bool isCompleted = string.Equals(asset.WorkflowStatus.Name, "COMPLETED", StringComparison.OrdinalIgnoreCase);
+    Asset siteRoot = Asset.GetSiteRoot(asset);  
+    ShowAcquireParams sapDoc = new ShowAcquireParams();
+    sapDoc.ShowBrowse = true;
+    sapDoc.ShowUpload = false;
+    sapDoc.DefaultFolder = siteRoot.AssetPath.ToString();
+          
+		Input.StartControlPanel("Release Information");
+    if (!isCompleted)
+    {
+        Asset releaseConfig = Asset.Load(asset.Parent.AssetPath.ToString() + "/Release Configuration");    
+
+
+        Input.ShowTextBox("Title", "releases_title", defaultValue: "Release " + asset.Id.ToString());
+        
+        Input.ShowTextBox("Description", "releases_description", height: 5);
+
+        // Load workflows and from-to statuses from release configuration    
+        var workflows = new Dictionary&lt;string, WorkflowConfig&gt;();    
+
+        if (releaseConfig.IsLoaded)
+        {
+            List&lt;string&gt; userGroups = context.UserInfo.GetGroupNames();
+            var workflowsConfig = releaseConfig.GetPanels("workflow_panel").Where(w =&gt; string.Equals(w.Raw["use_workflow"], "y", StringComparison.OrdinalIgnoreCase));
+            foreach (var w in workflowsConfig)
+            {
+                var fromToStatuses = new List&lt;string&gt;();
+
+                string fromStatus = null;
+                foreach (var s in w.GetPanels("status_panel"))
+                {
+                    var status = s.Raw["status"];
+                    if (fromStatus != null)
+                    {
+                        fromToStatuses.Add(fromStatus + "|" + status);
+                        fromStatus = null; // reset so we don't get duplicates
+                    }
+
+                    if (string.Equals(s.Raw["use"], "y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var permittedGroups = s.GetPanels("group").Select(i =&gt; i.Raw["group"]);
+                        if(userGroups.Intersect(permittedGroups).Any())
+                        {
+                                fromStatus = status;
+                        }
+                    }
+                }
+                workflows.Add(
+                  w.Raw["workflow"],
+                  new WorkflowConfig {WorkflowId = w.Raw["workflow_id"], Name = w.Raw["workflow"], Transitions = fromToStatuses});
+            }
+        }
+
+        ShowDropDownContainer(
+            "Workflow options",
+            "workflow",
+            workflows.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.WorkflowId),
+            wf =&gt; Input.ShowDropDown(
+                    "Transition",
+                    workflows[wf].WorkflowId + "_transition",
+                    workflows[wf].Transitions.ToDictionary(t =&gt; t.Replace("|", " to "), t =&gt; t)));     
+
+        Input.StartDropDownContainer("Release Type", "release_type", new Dictionary&lt;string, string&gt; { { "Workflow", "workflow" }, { "Asset Selection", "asset" }, { "No Assets to be deployed to Live", "no_asset" } });
+        // Container: Workflow 
+        {
+            Input.ShowSelectFolder("Select Root Folder", "release_folder", siteRoot.AssetPath, "By default will use site root.  Selecting a folder here will change the starting folder");
+        }
+
+        // Container: Asset Selection 
+        {
+            Input.NextDropDownContainer();
+            while (Input.NextPanel("asset_selection_panel"))
+            {
+                Input.ShowAcquireDocument("File", "selection_file", sapDoc);
+            }
+        }
+
+        // Container: No assets 
+        {
+            Input.NextDropDownContainer();
+        }
+        Input.EndDropDownContainer();
+      
+        Input.StartControlPanel("Auto-Retire");
+        while (Input.NextPanel("assets_retire_panel"))
+        {
+            Input.ShowAcquireDocument("Select an asset to retire", "asset_retire", sapDoc);
+        }
+        Input.EndControlPanel();       
+    }
+    else
+    {   
+      	var workflow = Asset.GetWorkflowByWorkflowId(Int32.Parse(asset.Raw["workflow"]));
+   			Input.ShowMessage("NOTE: This release has already been deployed and cannot be edited.", MessageType.Warning);      
+        Input.ShowMessage("Title: " + asset.Raw["releases_title"]);
+        Input.ShowMessage("Description: " + asset.Raw["releases_description"]);
+        Input.ShowMessage(String.Format("Workflow: {0} transition from {1} to {2}", workflow.Name, asset.Raw["releases_status"], asset.Raw["releases_status_set_to"]));
+        switch(asset.Raw["release_type"]) {
+            case "workflow":
+                Input.ShowMessage("Root folder: ", asset.Raw["release_folder"]);
+                break;
+            case "asset":
+                var labels = asset.GetPanels("asset_selection_panel").Select(p =&gt; Asset.Load(p["selection_file"]).Label);
+                Input.ShowMessage("Selected assets:\n{0}", String.Join("\n", labels));
+                break;
+            case "no_asset":
+                Input.ShowMessage("No assets");
+                break;
+        }      
+    }    
+
+
+
+	Input.EndControlPanel();
+ 
+%&gt;
+&lt;script runat="server" data-cpcode="true"&gt;
+  	class WorkflowConfig
+    {
+    	public string WorkflowId {get; set; }
+  		public string Name {get; set; }
+			public List&lt;string&gt; Transitions {get; set; }  
+    }
+    
+    private void ShowDropDownContainer(string label, string field, Dictionary&lt;string, string&gt; options, Action&lt;string&gt; f)
+    {
+        bool first = true;
+        foreach(var pair in options)
+        {
+            if(first)
+            {
+                Input.StartDropDownContainer(label, field, options);
+                first = false;
+            }
+            else
+                Input.NextDropDownContainer();
+            f(pair.Key);
+        }
+        if(options.Count &gt; 0)
+            Input.EndDropDownContainer();     
+    }
+&lt;/script&gt;</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208294</id>
+    <label>post_input.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release/post_input.aspx</path>
+    <folder_id>208291</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.PostInputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.CustomLibrary" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+		// Split transition field 
+		var transition = context.InputForm[context.InputForm["workflow"] + "_transition"];
+
+		if (String.IsNullOrEmpty(transition))
+    {
+    	context.ValidationErrorFields.Add(context.InputForm["workflow"] + "_transition", "Transition must be selected.");
+    }
+		else
+    {
+      var fromTo = transition.Split('|');
+      if(fromTo.Count() == 2)
+      {
+        context.InputForm["releases_status"] = fromTo[0];
+        context.InputForm["releases_status_set_to"] = fromTo[1];
+      }
+    }
+
+		// Title is a required field
+    if (!context.InputForm.HasField("releases_title"))
+        context.ValidationErrorFields.Add("releases_title", "Please add a title.");
+    else if (!asset.Label.Equals(context.InputForm["releases_title"]))
+    {
+        asset.Rename(context.InputForm["releases_title"]);
+    }
+
+		// Only LIVE assets can be retired
+    foreach (var item in context.InputForm.GetPanels("assets_retire_panel"))
+    {
+        Asset aRetire = Asset.Load(item.Raw["asset_retire"]);
+        if(aRetire.IsLoaded)
+        {
+            if(!string.Equals(aRetire.WorkflowStatus.Name, "LIVE", StringComparison.OrdinalIgnoreCase))
+                context.ValidationErrorFields.Add(item.GetFieldName("asset_retire"), "Only assets in LIVE can be retired.");
+        }
+    }
+
+		// For 'workflow' releases, set the root folder property if it hasn't been set explicitly,
+		// then populate the asset list
+    if (string.Equals(context.InputForm["release_type"], "workflow", StringComparison.OrdinalIgnoreCase)
+        || string.IsNullOrWhiteSpace(context.InputForm["release_type"]))
+    {
+      	var siteRoot = Asset.GetSiteRoot(asset);
+      	var searchRoot = siteRoot;
+      	if(!context.InputForm.HasField("release_folder") || String.IsNullOrEmpty(context.InputForm["release_folder"]))
+        {
+          context.InputForm["release_folder"] = siteRoot.AssetPath.ToString();
+        }
+      	else
+        {
+          searchRoot = Asset.Load(context.InputForm["release_folder"]);
+          if(!searchRoot.IsLoaded)
+          {
+            context.ValidationErrorFields.Add("release_folder", "Specified search root folder cannot be loaded.");
+          }
+        }
+      	// collect the assets to include in the release if there have been material changes to the configuration
+        Out.DebugWriteLine(
+          "searchRoot: {0}; workflow delta: {1}; status delta: {2}; folder delta: {3}",
+          searchRoot.IsLoaded,
+          !asset.Raw["workflow"].Equals(context.InputForm["workflow"]),
+          !asset.Raw["releases_status"].Equals(context.InputForm["releases_status"]),
+					!asset.Raw["release_folder"].Equals(context.InputForm["release_folder"]));
+        if (searchRoot.IsLoaded 
+            &amp;&amp; (asset.GetPanels("asset_counter").Count() == 0
+                || !asset.Raw["workflow"].Equals(context.InputForm["workflow"])
+                || !asset.Raw["releases_status"].Equals(context.InputForm["releases_status"])
+                || !asset.Raw["release_folder"].Equals(context.InputForm["release_folder"])))
+        {
+            FilterParams fpFilter = new FilterParams();
+            fpFilter.Add(Comparison.Equals, AssetType.File);
+          	fpFilter.Add(AssetPropertyNames.WorkflowId, Comparison.Equals, context.InputForm["workflow"]);
+          	fpFilter.SetFilterStatus(context.InputForm["releases_status"]);
+            
+          	foreach(var t in searchRoot.GetFilterList(fpFilter).Select((a, i) =&gt; Tuple.Create(i + 1, a.Id.ToString())))
+            {
+              context.InputForm["asset_counter:" + t.Item1] = "0";
+              context.InputForm["upload#asset_id:" + t.Item1] = t.Item2;
+            }
+        }
+    }
+
+		// for 'asset' releases, copy the selected assets the asset list for consistent handling
+		if (string.Equals(context.InputForm["release_type"], "asset", StringComparison.OrdinalIgnoreCase))
+    {
+      	var items =
+          context.InputForm.GetPanels("asset_selection_panel")
+          .Select((p, i) =&gt; {
+          	var n = p["selection_file"].LastIndexOf('/');
+          	return Tuple.Create(i + 1, p["selection_file"].Substring(n));
+          });
+        foreach(var t in items)
+        {
+              context.InputForm["asset_counter:" + t.Item1] = "0";
+              context.InputForm["upload#asset_id:" + t.Item1] = t.Item2;
+        }
+    }
+
+		// remove existing asset list if:
+		// 1. the release type has changed; or
+	  // 2. the number of assets listed in the input form is different to the previously stored list.
+		var previousList = asset.GetPanels("asset_counter");
+		if(!asset.Raw["release_type"].Equals(context.InputForm["release_type"])
+       || previousList.Count != context.InputForm.GetPanels("asset_counter").Count)
+    {
+      asset.DeleteContentFields(previousList.SelectMany(p =&gt; new [] { p["asset_counter"], p.GetFieldName("upload#asset_id")}).ToList());
+    }  
+%&gt;</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208296</id>
+    <label>preview.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release/preview.aspx</path>
+    <folder_id>208291</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.OutputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.CustomLibrary" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+    context.DisablePreviewCache = true;
+%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html &gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+        body
+        {
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+        .header
+        {
+            width: 150px;
+            display: inline-block;
+            float: left;
+            text-align: right;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #222222;
+        }
+        .header_line
+        {
+            display: block;
+            clear: both;
+            margin: 4px;
+        }
+        .header_text
+        {
+            display: block;
+            width: 800px; /*clear: both;
+            margin: 4px;*/
+        }
+        .heading
+        {
+            margin-right: 10px;
+            margin-left: 10px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #222222;
+            background-color: #ccccff;
+            clear: both;
+        }
+      
+      .table_text {
+        width: 100%;
+      }
+        .table_text td
+        {
+            padding: 12px;
+            font-size: 12px;
+        }
+        .table_text td.centercell
+        {
+            text-align: center;
+        }
+        .table_text tr
+        {
+            vertical-align: top;
+        }
+        .table_text tr.heading
+        {
+            text-align: center;
+            vertical-align: bottom;
+        }
+        .table_text tr.heading td
+        {
+            padding: 5px;
+        }
+        tbody tr:nth-child(even)
+        {
+            background-color: #f0f0f0;
+        }
+        .inprogress
+        {
+            background-color: #8DBEDA;
+            padding: 2px;
+            display: inline-block;
+        }
+        .report_div
+        {
+            width: 1060px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .table_text
+        {
+            border: 1px solid #aaaaaa;
+        }
+        table a
+        {
+            display: inline-block;
+            padding-top: 2px;
+            padding-bottom: 4px;
+        }
+        h3
+        {
+            text-align: center;
+        }
+        .subtext
+        {
+            font-weight: normal;
+            font-size: 10px;
+            font-style: italic;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="report_div"&gt;
+        &lt;h1&gt;&lt;%=asset["releases_title"] %&gt; Report&lt;/h1&gt;
+            &lt;% if (!string.IsNullOrWhiteSpace(asset["releases_description"]))
+               { %&gt;
+            &lt;div class="header"&gt;Description&lt;/div&gt;
+            &lt;div class="header_text"&gt;&lt;%= asset["releases_description"].Replace("\n", "&lt;br /&gt;")%&gt;&lt;/div&gt;
+            &lt;% } %&gt;
+    &lt;/div&gt;	
+    &lt;div class="header_line"&gt;
+        &lt;div class="header"&gt;Status&lt;/div&gt;
+        &lt;span style="background-color: #&lt;%= asset.WorkflowStatus.Color %&gt;; padding: 2px; padding-right: 5px;
+            font-size: 10px; font-weight: bold;"&gt;
+            &lt;%= asset.WorkflowStatus.Name %&gt;&lt;/span&gt;                
+    &lt;/div&gt;
+    &lt;div class="header_line"&gt;
+        &lt;div class="header"&gt;Status Date&lt;br /&gt;&lt;/div&gt;
+        &lt;%= Convert.ToDateTime(asset.StatusDate).ToString() %&gt;
+        &lt;span class="subtext"&gt;(Date the status was changed)&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;%
+        if (!string.Equals(asset.Raw["release_type"], "no_asset", StringComparison.OrdinalIgnoreCase))
+        {
+    %&gt;
+    &lt;div class="header_line"&gt;
+        &lt;div class="header"&gt;From&lt;/div&gt;
+        &lt;span style="background-color: #&lt;%= Status.Load(asset["releases_status"]).Color %&gt;; padding: 2px; padding-right: 5px; font-size: 10px; font-weight: bold;"&gt;&lt;%=asset["releases_status"]%&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="header_line"&gt;
+        &lt;div class="header"&gt;To&lt;/div&gt;
+        &lt;span style="background-color: #&lt;%= Status.Load(asset["releases_status_set_to"]).Color %&gt;; padding: 2px; padding-right: 5px;font-size: 10px; font-weight: bold;"&gt;&lt;%=asset["releases_status_set_to"]%&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;% }
+       else
+
+       {
+    %&gt;
+    &lt;div class="header_line"&gt;
+        &lt;div class="header"&gt;To&lt;/div&gt;
+        &lt;span style="background-color: #&lt;%= Status.Load("Retired").Color %&gt;; padding: 2px; padding-right: 5px;font-size: 10px; font-weight: bold;"&gt;Retired&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;% } %&gt;
+
+    &lt;%
+  			var siteRoot = Asset.GetSiteRoot(asset);
+  			var pathPrefix = siteRoot.AssetPath.ToString().Length;
+  
+        var columns = new Dictionary&lt;string, Func&lt;Asset, OutputContext, string&gt;&gt;() {
+            {"Asset Id",           (a, c) =&gt; String.Format("&lt;a href='/{0}/cpt_preview/{1}'&gt;{1}&lt;/a&gt;", c.ClientName, a.Id) },            
+            {"Branch Of",          (a, c) =&gt; a.Id != a.BranchId ? String.Format("&lt;a href='/{0}/cpt_preview/{1}'&gt;{1}&lt;/a&gt;", c.ClientName, a.BranchId) : "" },
+            {"CMS Path",           (a, c) =&gt; a.AssetPath.ToString().Substring(pathPrefix) },
+            {"Created",            (a, c) =&gt; a.CreateDate.ToString()},
+            {"Status",             (a, c) =&gt; String.Format("&lt;span style='background-color: #{0}; padding: 12px; '&gt;{1}&lt;/span&gt;", a.WorkflowStatus.Color, a.WorkflowStatus.Name) },
+            {"Last Modified",      (a, c) =&gt; a.ModifiedDate.ToString() },
+            {"Template",           (a, c) =&gt; a.TemplateLabel },
+            {"Last published",     (a, c) =&gt; a.PublishDate.ToString() },
+            {"Last publishing by", (a, c) =&gt; User.Load(a.PublishUserId).Username }                         
+        };
+
+        if (!string.Equals(asset.Raw["release_type"], "no_asset", StringComparison.OrdinalIgnoreCase))
+        {
+    %&gt;
+  	&lt;h2&gt;Assets to release&lt;/h2&gt;
+    &lt;table class="table_text"&gt;
+        &lt;thead&gt;
+        &lt;tr class="heading"&gt;
+        &lt;% foreach(var c in columns) { Out.WriteLine("&lt;th&gt;{0}&lt;/th&gt;", c.Key); } %&gt;
+        &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+        &lt;%= reportTable(asset, context, columns) %&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+    &lt;% } %&gt;
+  
+  	&lt;%
+  	if(asset.GetPanels("assets_retire_panel").Count &gt; 0)
+    {
+    %&gt;  
+    &lt;hr/&gt;
+    &lt;h2&gt;Assets to retire&lt;/h2&gt;
+    &lt;table class="table_text"&gt;
+        &lt;thead&gt;
+        &lt;tr class="heading"&gt;
+        &lt;% foreach(var c in columns) { Out.WriteLine("&lt;th&gt;{0}&lt;/th&gt;", c.Key); } %&gt;
+        &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+        &lt;%= reportTable(asset, context, columns, true) %&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;  
+    &lt;% } %&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;script runat="server" data-cpcode="true"&gt;
+    
+    public string reportTable(Asset asset, OutputContext context, Dictionary&lt;string, Func&lt;Asset, OutputContext, string&gt;&gt; columns, bool bRetireAssets = false)
+    {
+        StringBuilder output = new StringBuilder(1024);
+        foreach (PanelEntry reportRow in asset.GetPanels(bRetireAssets ? "assets_retire_panel" : "asset_counter"))
+        {
+            Asset reportRowAsset = Asset.LoadDirect(reportRow[bRetireAssets ? "asset_retire" : "asset_id"]);
+            if (reportRowAsset.IsLoaded)
+            {
+                output.Append("&lt;tr&gt;");
+                foreach(var c in columns) { output.AppendFormat("&lt;td&gt;{0}&lt;/td&gt;", c.Value(reportRowAsset, context)); }
+                output.Append("&lt;/tr&gt;");
+
+            }
+        }
+        return output.ToString();
+    }
+        
+    &lt;/script&gt;</value>
+      </field>
+    </fields>
+  </asset>
+  <folder>
+    <id>208287</id>
+    <label>Release Configuration</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Templates/Release Configuration</path>
+    <folder_id>208282</folder_id>
+    <subType>512</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>TemplateFolder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208318</id>
+    <label>filename.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release Configuration/filename.aspx</path>
+    <folder_id>208287</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.FilenameInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+context.PublishPath = "";
+%&gt;
+</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208288</id>
+    <label>input.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release Configuration/input.aspx</path>
+    <folder_id>208287</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.InputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.CustomLibrary" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+    Input.StartControlPanel("Configuration");
+    Dictionary&lt;string, string&gt; useOptions = new Dictionary&lt;string, string&gt;() {{ "No", "n"}, {"Yes", "y"}};
+
+    Dictionary&lt;string, string&gt; groupOptions = new Dictionary&lt;string, string&gt;();
+    groupOptions.Add("Developer", "Developer");
+    groupOptions.Add("Release Admin", "Release Admin");
+
+    while (Input.NextPanel("workflow_panel"))
+    {
+        Input.ShowCheckBox("Use", "use_workflow", "y", "");
+        Input.ShowTextBox("Workflow", "workflow", width: 50);
+        Input.ShowMessage("Added the workflow statuses releases should be allowed FROM. List the statuses in logical order as the TO status will be set to the status listed immediately after the FROM status.");
+        while (Input.NextPanel("status_panel", displayName: "Allow release from status"))
+        {
+            Input.ShowTextBox("Status", "status", width: 50);
+            Input.StartDropDownContainer("Allow by group?", "use", useOptions);
+            Input.NextDropDownContainer();
+
+            Input.ShowSelectList("Groups", "group", groupOptions);
+            Input.EndDropDownContainer();
+        }
+    }
+   Input.EndControlPanel();
+%&gt;</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208320</id>
+    <label>post_input.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release Configuration/post_input.aspx</path>
+    <folder_id>208287</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.PostInputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+// global workflows
+var root = Asset.Load("/");
+var workflows = root.GetWorkflows();
+// project workflows
+workflows.AddRange(asset.GetWorkflows());
+
+foreach(var p in context.InputForm.GetPanels("workflow_panel"))
+{
+	if(String.IsNullOrEmpty(p["workflow"]))
+  {
+    context.ValidationErrorFields.Add(p.GetFieldName("workflow"), "Workflow name cannot be blank.");
+  }
+  else
+  {
+    var workflow = workflows.FirstOrDefault(w =&gt; w.Name.Equals(p["workflow"]));
+    if(workflow == null)
+    {
+      context.ValidationErrorFields.Add(p.GetFieldName("workflow"), "Unknown workflow name specified.");
+    }
+    else
+    {
+      p["workflow_id"] = workflow.WorkflowId.ToString();
+    }
+  }
+}
+
+%&gt;
+</value>
+      </field>
+    </fields>
+  </asset>
+  <asset>
+    <id>208289</id>
+    <label>preview.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Release Configuration/preview.aspx</path>
+    <folder_id>208287</folder_id>
+    <subType>17</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.OutputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;p&gt;Release Configuration&lt;/p&gt;
+&lt;p&gt;Last modified: &lt;%= asset.ModifiedDate %&gt; by &lt;%= User.Load(asset.ModifiedUserId).Username %&gt;&lt;/p&gt;
+&lt;p&gt;Edit to view the configuration.&lt;/p&gt;</value>
+      </field>
+    </fields>
+  </asset>
+  <folder>
+    <id>208298</id>
+    <label>Scripts</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Templates/Scripts</path>
+    <folder_id>208282</folder_id>
+    <subType>256</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>TemplateFolder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208299</id>
+    <label>release_v3.aspx</label>
+    <template_id>1792</template_id>
+    <template_path>/System/Templates/Basis/DeveloperCS/</template_path>
+    <template_language>1</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Templates/Scripts/release_v3.aspx</path>
+    <folder_id>208298</folder_id>
+    <subType>1</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Template</intendedType>
+    <type>2</type>
+    <fields>
+      <field>
+        <name>body</name>
+        <value>&lt;%@ Page Language="C#" Inherits="CrownPeak.Internal.Debug.OutputInit" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.Services" %&gt;
+&lt;%@ Import Namespace="CrownPeak.CMSAPI.CustomLibrary" %&gt;
+&lt;!--DO NOT MODIFY CODE ABOVE THIS LINE--&gt;
+&lt;%
+
+var releaseAssets = 
+    asset.GetPanels("asset_counter")
+    .Select(p =&gt; Asset.LoadDirect(p["asset_id"]))
+    .Where(a =&gt; a.IsLoaded &amp;&amp; !a.WorkflowStatus.Name.Equals(asset.Raw["releases_status_set_to"], StringComparison.OrdinalIgnoreCase))
+    .Select(a =&gt; a.Id)
+    .ToList();
+
+var retireAssets = 
+    asset.GetPanels("assets_retire_panel")
+    .Select(p =&gt; Asset.Load(p["asset_retire"]))
+    .Where(a =&gt; a.IsLoaded &amp;&amp; !a.WorkflowStatus.Name.Equals("Retired", StringComparison.OrdinalIgnoreCase))
+    .Select(a =&gt; a.Id)
+    .ToList();
+
+if(retireAssets.Count &gt; 0) Asset.RouteAssets(retireAssets, Status.Load("Retired"), false);
+
+%&gt;
+</value>
+      </field>
+    </fields>
+  </asset>
+  <folder>
+    <id>208284</id>
+    <label>Workflows</label>
+    <model_id>
+    </model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <path>/Release Management/Project/Workflows</path>
+    <folder_id>208280</folder_id>
+    <subType>1024</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>WorkflowsFolder</intendedType>
+    <type>4</type>
+  </folder>
+  <asset>
+    <id>208300</id>
+    <label>Release Workflow</label>
+    <template_id>0</template_id>
+    <template_language>0</template_language>
+    <model_id>0</model_id>
+    <is_deleted>false</is_deleted>
+    <is_hidden>false</is_hidden>
+    <workflow_id>0</workflow_id>
+    <status>0</status>
+    <status_name>
+    </status_name>
+    <path>/Release Management/Project/Workflows/Release Workflow</path>
+    <folder_id>208284</folder_id>
+    <subType>1024</subType>
+    <templateSubType>
+    </templateSubType>
+    <intendedType>Workflow</intendedType>
+    <type>2</type>
+    <fields />
+    <workflow>
+      <id>89</id>
+      <name>Release Workflow</name>
+      <description>Workflow for release management</description>
+      <steps>
+        <step>
+          <execFilePath>
+          </execFilePath>
+          <accessFile>/System/States/Draft</accessFile>
+          <emailFilePath>
+          </emailFilePath>
+          <commands>
+            <command>
+              <id>2037</id>
+              <command>Deploy</command>
+              <commandDest>2</commandDest>
+              <commandId>961</commandId>
+              <filterId>0</filterId>
+              <requestComment>false</requestComment>
+              <inSummary>false</inSummary>
+              <queueCommand>false</queueCommand>
+              <enforceSpellcheck>false</enforceSpellcheck>
+              <enforceEdit>false</enforceEdit>
+              <enforceSchedule>false</enforceSchedule>
+              <verifyCommand>false</verifyCommand>
+              <inEdit>false</inEdit>
+            </command>
+          </commands>
+          <publishes />
+          <step>1</step>
+          <taskSubject>Draft release</taskSubject>
+          <taskDescription>
+          </taskDescription>
+          <status>780</status>
+          <statusName>Draft</statusName>
+          <setAsDeleted>false</setAsDeleted>
+          <setAsHidden>false</setAsHidden>
+          <publishState>false</publishState>
+          <inMenu>false</inMenu>
+          <useDqm>false</useDqm>
+        </step>
+        <step>
+          <execFilePath>/Release Management/Project/Templates/Scripts/release_v3.aspx</execFilePath>
+          <accessFile>/System/States/Completed</accessFile>
+          <emailFilePath>
+          </emailFilePath>
+          <commands>
+            <command>
+              <id>2038</id>
+              <command>Redeploy</command>
+              <commandDest>2</commandDest>
+              <commandId>962</commandId>
+              <filterId>0</filterId>
+              <requestComment>false</requestComment>
+              <inSummary>false</inSummary>
+              <queueCommand>false</queueCommand>
+              <enforceSpellcheck>false</enforceSpellcheck>
+              <enforceEdit>false</enforceEdit>
+              <enforceSchedule>false</enforceSchedule>
+              <verifyCommand>false</verifyCommand>
+              <inEdit>false</inEdit>
+            </command>
+          </commands>
+          <publishes />
+          <step>2</step>
+          <taskSubject>Release is deployed</taskSubject>
+          <taskDescription>
+          </taskDescription>
+          <status>956</status>
+          <statusName>Completed</statusName>
+          <setAsDeleted>false</setAsDeleted>
+          <setAsHidden>false</setAsHidden>
+          <publishState>false</publishState>
+          <inMenu>false</inMenu>
+          <useDqm>false</useDqm>
+        </step>
+        <step>
+          <execFilePath>
+          </execFilePath>
+          <accessFile>/System/States/Deleted</accessFile>
+          <emailFilePath>
+          </emailFilePath>
+          <commands />
+          <publishes />
+          <step>3</step>
+          <taskSubject>Document is deleted</taskSubject>
+          <taskDescription>Document is deleted from the CMS</taskDescription>
+          <status>788</status>
+          <statusName>Deleted</statusName>
+          <setAsDeleted>true</setAsDeleted>
+          <setAsHidden>false</setAsHidden>
+          <publishState>false</publishState>
+          <inMenu>false</inMenu>
+          <useDqm>false</useDqm>
+        </step>
+      </steps>
+    </workflow>
+  </asset>
+</assets>
