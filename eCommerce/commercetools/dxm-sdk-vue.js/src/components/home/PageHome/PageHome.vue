@@ -1,11 +1,11 @@
 <script>
 import Vue from 'vue';
 import { CmsDynamicPage } from 'crownpeak-dxm-vuejs-sdk';
-import TheHeader from '@/components/header/TheHeader/TheHeader.vue';
-import TheFooter from '@/components/footer/TheFooter/TheFooter.vue';
-import Banner from '@/components/home/Banner/Banner.vue';
-import ProductCategory from '@/components/home/ProductCategory/ProductCategory.vue';
-import FooterBit from '@/components/home/FooterBit/FooterBit.vue';
+import TheHeader from '../../header/TheHeader/TheHeader.vue';
+import TheFooter from '../../footer/TheFooter/TheFooter.vue';
+import Banner from '../../home/Banner/Banner.vue';
+import ProductCategory from '../../home/ProductCategory/ProductCategory.vue';
+import FooterBit from '../../home/FooterBit/FooterBit.vue';
 import DropZone from '../../crownpeak/DropZone.vue';
 
 Vue.prototype.$cmsAssetId = 276801;
