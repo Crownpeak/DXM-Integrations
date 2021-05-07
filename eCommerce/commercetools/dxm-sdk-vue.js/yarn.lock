@@ -5427,10 +5427,10 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-crownpeak-dxm-accessapi-helper@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/crownpeak-dxm-accessapi-helper/-/crownpeak-dxm-accessapi-helper-1.0.4.tgz#5aa5cc9c29c4023a5a0025a840b353228314495e"
-  integrity sha512-62yC9zkAQfZhpUHSpIQdkNJDYLwT1vH1rMuN/W569gEL+rpqA0lVtySZNFKWWQIh2+k47Gd5lJDKeZEFksAfPQ==
+crownpeak-dxm-accessapi-helper@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/crownpeak-dxm-accessapi-helper/-/crownpeak-dxm-accessapi-helper-1.0.5.tgz#8189dd2836c8c2100c514698bb42912960d1c4a3"
+  integrity sha512-UgTIegfhdxoWLfaubyziqcK4GPJ1GVwJNFLOhfllgqu5ZS3pPSHueph+3/uHPnLVjCmVzQ8r83TSg7QlcdyLFA==
   dependencies:
     istextorbinary "^2.5.1"
     mocha "^7.1.2"
@@ -5439,22 +5439,22 @@ crownpeak-dxm-accessapi-helper@^1.0.4:
     request-promise "^4.2.4"
     request-promise-native "^1.0.7"
 
-crownpeak-dxm-sdk-core@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/crownpeak-dxm-sdk-core/-/crownpeak-dxm-sdk-core-2.2.0.tgz#4759292e6b905c6daebd9a336390a935ec025b21"
-  integrity sha512-CyhcOv+hksEg58UGESLJ5IGrq7J8JbDwBYmxRRvi6luW3tN6nGAeCOr9GglJWIBhyE4AZHk++p4aIaKIe7mFfw==
+crownpeak-dxm-sdk-core@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/crownpeak-dxm-sdk-core/-/crownpeak-dxm-sdk-core-3.4.0.tgz#af87b5821ce6970c76c6fd39973bb00d4d456177"
+  integrity sha512-4+2TPJWiIhg6GZKyNa3/1Jy98X/jD70F6iip1+qWrOKMsvNqdU+n68YyD9+n54Z6fDmlIXm3YpJy63E27Ik37A==
   dependencies:
-    crownpeak-dxm-accessapi-helper "^1.0.4"
+    crownpeak-dxm-accessapi-helper "^1.0.5"
     minimist "^1.2.5"
     xml2js "^0.4.23"
 
-crownpeak-dxm-vuejs-sdk@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/crownpeak-dxm-vuejs-sdk/-/crownpeak-dxm-vuejs-sdk-2.2.0.tgz#54db05232216b1eed7e910b4033e4242ec93a7b2"
-  integrity sha512-lavG70pU4Kof55JXVQ2LGej10ncwyhQtnGXE4r1lRXFS7dQVMmLgZBx+rNIwK4D3W2umjDMp2UQh+aulAKznNA==
+crownpeak-dxm-vuejs-sdk@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/crownpeak-dxm-vuejs-sdk/-/crownpeak-dxm-vuejs-sdk-3.4.0.tgz#b23ac6783363889fd833d128a8184c294894edb2"
+  integrity sha512-PZvlVBbWz6GMFc4sY6IMOK9phVB8gdGKfnBfbnzZk4Z4rSuUlOGE/AGbmw3FR17xNLt/PZKGvsDvXtr0hhus7w==
   dependencies:
     "@babel/parser" "^7.9.6"
-    crownpeak-dxm-sdk-core "^2.2.0"
+    crownpeak-dxm-sdk-core "^3.4.0"
     dotenv "^8.2.0"
     vue "^2.6.11"
     vue-class-component "^7.2.3"
