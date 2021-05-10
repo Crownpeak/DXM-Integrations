@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="rtHelp.Text" xml:space="preserve">
+    <value>XTM Helper Tool
+
+This tool can be used to:
+
+* export Crownpeak content into multiple XML files, suitable for sending to XTM for translation;
+* create a translation project inside XTM from a folder of XML files;
+* download the resulting zip file from a completed XTM project;
+* import a zip file containing translation results into Crownpeak;
+* import a single file containing translated content into Crownpeak;
+* prepare TMF locale contents inside Crownpeak to receive translation results.
+
+1. Export Crownpeak content into multiple XML files, suitable for sending to XTM for translation
+
+In order to create a translation project in XTM, the content must first be exported from Crownpeak. The content will be exported according to the rules set up in the _TMF/Template Translations Config folder. If a template is not present here, all fields for any assets using that template will be exported. This can cause issues when the content is imported after translation.
+
+1.a. Populate all of the fields in the "Crownpeak Details" box.
+1.b. Enter the asset id of the source locale folder into the Source field in the "Export from Crownpeak to Folder" box.
+1.c. Optionally enter one or more asset ids (comma-separated) into the Exclude IDs field in the "Export from Crownpeak to Folder" box. If any id corresponds to a folder, that folder and all of its descendents will be excluded from the export.
+1.d. Optionally enter one or more template definition ids (comma-separated) into the Tmp Def IDs field in the "Export from Crownpeak to Folder" box. A template definition id is the asset id of a Template Translation Config asset.
+1.e. Type the path to a folder into the Folder field in the "Export from Crownpeak to Folder" box, or use the button to the right of the Folder field to select the folder from a picker dialog. The exported XML files will be created in this folder.
+1.f. Click the button labelled "1 - Export Files".
+1.g. When the export is complete, the message "Finished" will be displayed.
+
+If you do not wish to send all content for translation, or you wish to make content changes, this can be done following the completed export and before creating a trranslation project inside XTM, below.
+
+2. Create a translation project inside XTM from a folder of XML files
+
+A translation project can be created in XTM once you have a folder containing the files to be translated. The project will be created with the JOIN option set, which means that XTM's Visual Mode cannot be used. This is normal when multiple source files are sent for translation.
+
+2.a. Populate all of the fields in the "XTM Details" box.
+2.b. Enter the source locale into the Src Locale field in the "Create XTM Project from Folder" box. This locale MUST be in the format xx_XX, where the first letters denote the language, and the second denote the country. For example en_GB for English - Great Britain.
+2.c. Enter the destination locale into the Dest Locale field in the "Create XTM Project from Folder" box. This locale MUST be in the same format as above.
+2.d. Enter a name for the project into the Project Name field in the "Create XTM Project from Folder" box.
+2.e. Type the path to the folder containing the XML files for translation into the Folder field in the "Create XTM Project from Folder" box, or use the button to the right of the Folder field to select the folder from a picker dialog.
+2.f. Click the button labelled "2 - Create Project".
+2.g. When the project is created, the message "Finished creating project" and the project ID will be displayed. You should note down thei project ID, since it will not be shown again.
+
+3. Download the resulting zip file from a completed XTM project
+
+Before the results of a translation project can be imported into Crownpeak, they must be downloaded from XTM.
+
+3.a. Populate the Endpoint and Token fields in the "XTM Details" box.
+3.b. Enter the project id to download into the Project ID field in the "Download Zip from XTM" box.
+3.c. Click the button labelled "3 - Download Zip". Once the results have been prepared, a dialog will be displayed for you to select the location to save the zip file.
+3.f. When the download is complete, the message "Finished" will be displayed.
+
+If you wish to examine or change the translation results before importing into Crownpeak, this can be done by editing the zip file before importing the zip file, below.
+
+4. Import a zip file containing translation results into Crownpeak
+
+A zip file containing translation results can be imported into Crownpeak, where it will overwrite any existing values for any fields of assets contained in the translation results. Other fields will not be affected, nor will assets that are not included in the zip file.
+
+4.a. Populate all of the fields in the "Crownpeak Details" box.
+4.b. Type the path to the zip file containing translation results into the Zip file field in the "Import Zip into Crownpeak" box, or use the button to the right of the Zip file field to select the file from a picker dialog.
+4.c. If the zip file contains multiple destination languages, enter the desired locale into the Locale field in the "Import Zip into Crownpeak" box. This locale MUST be in the format xx_XX, where the first letters denote the language, and the second denote the country. If only one language was sent for translation (which is most likely) then this field should be left blank.
+4.d. Enter the asset id of the source locale folder into the Source field in the "Import Zip into Crownpeak" box.
+4.e. Enter the asset id of the destination locale folder into the Target field in the "Import Zip into Crownpeak" box.
+4.f. Click the button labelled "8 - Process Zip".
+4.g. When the import is complete, the message "Finished" will be displayed.
+
+5. Import a single file containing translated content into Crownpeak
+
+If it is not desirable to import all translation results, it is possible to extract a single translation result XML file and import this onto a single asset. This import will overwrite any existing values for any fields contained in the XML. Other fields will not be affected.
+
+5.a. Populate all of the fields in the "Crownpeak Details" box.
+5.b. Enter the asset id of the asset to be updated into the Asset ID field in the "Import Single File into Crownpeak" box.
+5.c. Type the path to the XML file containing translated content into the XML file field in the "Import Single File into Crownpeak" box, or use the button to the right of the XML file field to select the file from a picker dialog.
+5.d. Click the button labelled "9 - Import Xml".
+5.e. When the import is complete, the message "Finished" will be displayed.
+
+6. Prepare TMF locale contents inside Crownpeak to receive translation results
+
+6.1. Create a folder tree ready to receive contents
+
+In order to make it more efficient to copy contents, first a folder tree should be created in the target locale, ready to receive content copied from the source.
+
+6.1.a. Populate all of the fields in the "Crownpeak Details" box.
+6.1.b. Enter the asset id of the source folder into the Source field in the "Crownpeak TMF Operations" box.
+6.1.c. Enter the asset id of the target folder into the Target field in the "Crownpeak TMF Operations" box.
+6.1.d. Click the button labelled "4 - Create Folder Tree".
+6.1.e. When the operation is complete, the message "Finished" will be displayed.
+
+Note that if you do not wish to copy all assets, you can delete or hide folders in the target locale following operation 6.1 above. These folders will be excluded from the copy operation, below.
+
+6.2. Copy assets from source to target locale
+
+Once the desired folder tree has been created following the operation above, this operation will copy all assets and their contents from the source to the target folder tree. Any target folders that are not found will be excluded from the copy operation.
+
+6.2.a. Populate all of the fields in the "Crownpeak Details" box.
+6.2.b. Enter the asset id of the source folder into the Source field in the "Crownpeak TMF Operations" box.
+6.2.c. Enter the asset id of the target folder into the Target field in the "Crownpeak TMF Operations" box.
+6.2.d. Click the button labelled "5 - Copy Assets".
+6.2.e. When the operation is complete, the message "Finished" will be displayed.
+
+6.3. Relink internal CMS links on assets
+
+Any assets in the target locale that contain internal CMS links to assets in the source locale will be relinked to refer to the equivalent asset within the target locale.
+
+6.3.a. Populate all of the fields in the "Crownpeak Details" box.
+6.3.b. Enter the asset id of the source folder into the Source field in the "Crownpeak TMF Operations" box.
+6.3.c. Enter the asset id of the target folder into the Target field in the "Crownpeak TMF Operations" box.
+6.3.d. Click the button labelled "6 - Relink".
+6.3.e. When the operation is complete, the message "Finished" will be displayed.
+
+6.4. Create TMF relationships between source and target assets
+
+Once the content has been copied, this operation will create TMF relationship assets between all source and target assets. This is not an essential operation, but will help to make future TMF operations done by content authors to feel like normal.
+
+6.4.a. Populate all of the fields in the "Crownpeak Details" box.
+6.4.b. Enter the asset id of the source folder into the Source field in the "Crownpeak TMF Operations" box.
+6.4.c. Enter the asset id of the target folder into the Target field in the "Crownpeak TMF Operations" box.
+6.4.d. Enter the asset id of the _TMF/Relationships Config folder into the Relationships field in the "Crownpeak TMF Operations" box.
+6.4.e. Enter the asset id of the model for a relationship asset into the Rel Model field in the "Crownpeak TMF Operations" box. This is commonly (but not always) the id of /System/Translation Model Framework/_Models/Relationship/Relationship.
+6.4.f. Click the button labelled "7 - TMF link".
+6.4.g. When the operation is complete, the message "Finished" will be displayed.</value>
+  </data>
+  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+</root>

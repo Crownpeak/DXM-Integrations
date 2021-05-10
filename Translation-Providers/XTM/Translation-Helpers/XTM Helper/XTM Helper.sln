@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XTM Helper", "XTM Helper.csproj", "{3F3E0358-52D8-41AD-9F57-D4AF84F52C37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F3E0358-52D8-41AD-9F57-D4AF84F52C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F3E0358-52D8-41AD-9F57-D4AF84F52C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F3E0358-52D8-41AD-9F57-D4AF84F52C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F3E0358-52D8-41AD-9F57-D4AF84F52C37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF72A267-0EF1-411A-A6B6-1910D1A2DF34}
+	EndGlobalSection
+EndGlobal
