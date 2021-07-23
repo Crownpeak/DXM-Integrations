@@ -19,6 +19,8 @@ namespace LocalProject
 	 * 0.1.3   | 2020-11-30 | Performance improvements in CreateTranslatedAsset and FixRelativeLinks
 	 * 0.1.4   | 2021-03-02 | Fix to code locating the Translation Config asset
 	 * 0.2.0   | 2021-05-07 | Support for multi-asset projects
+	 * 0.2.1   | 2021-07-08 | Include upload# bug fix from OCD-21746
+	 * 0.2.2   | 2021-07-14 | Add ConfigPostInput to ITMFTranslator
 	 */
 	#region "LocaleId Class"
 
@@ -46,6 +48,10 @@ namespace LocalProject
 		public static string Locales_Config = "/Locales Config/";
 		public static string Relationships_Config = "/Relationships Config/";
 
+		// Used by ServicesTMF.RemoveTmfDuplicates() for identifying "upload#" prefixes.
+		private const string UploadPrefix = "upload#";
+		private static readonly int UploadPrefixLen = UploadPrefix.Length;
+    
 		/// <summary>
 		///   Returns TMF Config Folder Name
 		/// </summary>
@@ -1162,6 +1168,57 @@ namespace LocalProject
 		}
 
 		/// <summary>
+		/// Removes duplicate properties resulting from the way TMF content is processed.
+		///
+		/// Example:
+		/// 
+		/// "choice_block_list_panel_blocks_related_content_item_panel_links_list_linkaddress_link_internal"
+		///
+		/// vs.
+		/// 
+		/// "upload#choice_block_list_panel_blocks_related_content_item_panel_links_list_linkaddress_link_internal"
+		///
+		/// The TMF processing results in non-upload# prefixed property names which must be removed.
+		/// Based on the complexity of TMF processing and the number of operations and paths involved in generating the updated asset
+		/// content, it was deemed easiest to simply check for and eliminate the duplicates in this manner at the conclusion of the
+		/// processing.
+		/// </summary>
+		/// <param name="content">The list of properties to check.</param>
+		/// <returns>Filtered list of properties</returns>
+		public static Dictionary<string, string> RemoveTmfDuplicates(Dictionary<string, string> content)
+		{
+			var toRemove = new List<string>();
+			foreach (var entry in content)
+			{
+				// Keys in question will ALWAYS be prefixed with "upload#".  Check to see if this is one of them.
+				// What we want to do here is remove any key/value for which there is a duplicate non-prefixed
+				// entry with the same value.
+				if (entry.Key.StartsWith(UploadPrefix))
+				{
+					// Get the value because we want to use it to test for a complete match.
+					var value = content[entry.Key];
+
+					// Remove the "upload#" prefix from the key by using substring to skip past the prefix to the end of the key.
+					string strippedKey = entry.Key.Substring(UploadPrefixLen);
+
+					// If we have an unwanted duplicate of both the the unprefixed key and it's value, add the key to a list for removal.
+					if (content.ContainsKey(strippedKey) && content[strippedKey] != null && content[strippedKey].Equals(value))
+					{
+						toRemove.Add(strippedKey);
+					}
+				}
+			}
+
+			// Remove any unwanted duplicates
+			foreach (var key in toRemove)
+			{
+				content.Remove(key);
+			}
+
+			return content;
+		}
+
+		/// <summary>
 		///   PostInput implementation for TMF
 		/// </summary>
 		public class PostInput : TMF
@@ -2086,7 +2143,10 @@ namespace LocalProject
 
 											var tempSourcContent = asset.GetContent().ToDictionary(x => x.Key, x => x.Value);
 
-											Asset.Load(aConfigContent.Raw["destination_id"]).SaveContent(tempSourcContent);
+											// Because TMF processing duplicates certain content properties, we need to remove them before saving back to the asset.
+											var adjustedContent = ServicesTMF.RemoveTmfDuplicates(tempSourcContent);
+
+											Asset.Load(aConfigContent.Raw["destination_id"]).SaveContent(adjustedContent);
 											aDestTmpContent = Asset.Load(aConfigContent["destination_id"]);
 
 											//Out.DebugWriteLine("aDestTmpContent.Id=" + aDestTmpContent.Id);
@@ -2372,7 +2432,7 @@ namespace LocalProject
 				};
 			}
 
-			private static ITMFTranslator GetTmfTranslator(string translatorName)
+			public static ITMFTranslator GetTmfTranslator(string translatorName)
 			{
 				switch (translatorName)
 				{
@@ -2434,6 +2494,7 @@ namespace LocalProject
 		{
 			ITMFTranslator Init(Asset config);
 			void ConfigInput(Asset asset, InputContext context);
+			void ConfigPostInput(Asset asset, PostInputContext context);
 			void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination);
 			void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets);
 			Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, object response);
@@ -2454,6 +2515,9 @@ namespace LocalProject
 			}
 
 			public void ConfigInput(Asset asset, InputContext context)
+			{ }
+
+			public void ConfigPostInput(Asset asset, PostInputContext context)
 			{ }
 
 			public void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination)

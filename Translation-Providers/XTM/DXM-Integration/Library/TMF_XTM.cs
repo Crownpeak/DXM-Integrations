@@ -17,11 +17,18 @@ namespace LocalProject
 	 * 0.1.0   | 2020-10-19 | Initial release
 	 * 0.1.1   | 2020-11-19 | Remove empty fields from XML document sent for translation
 	 * 0.2.0   | 2021-05-07 | Support for multi-asset projects
+	 * 0.2.1   | 2021-07-14 | Add ConfigPostInput for Access Token generation
+	 * 0.2.2   | 2021-07-22 | Stop project name from exceeding 100 character limit
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
 		private const string XTM_API_ENDPOINT = "xtm_api_endpoint";
+		private const string XTM_ACCESS_TOKEN_OPTION = "xtm_access_token_option";
 		private const string XTM_ACCESS_TOKEN = "xtm_access_token";
+		private const string XTM_GENERATE_TOKEN_CLIENT = "xtm_generate_token_client";
+		private const string XTM_GENERATE_TOKEN_USERID = "xtm_generate_token_userid";
+		private const string XTM_GENERATE_TOKEN_PASSWORD = "xtm_generate_token_password";
+		private const string XTM_GENERATE_TOKEN_INTEGRATION_KEY = "xtm_generate_token_integration_key";
 		private const string XTM_CUSTOMER_ID = "xtm_customer_id";
 		private const string XTM_TEMPLATE_LIST = "xtm_template_list";
 		private const string XTM_TEMPLATE_NAME = "xtm_template_name";
@@ -82,9 +89,91 @@ namespace LocalProject
 			Input.ShowTextBox("Retry Count for Translation Status", XTM_RETRY_COUNT, helpMessage: "How many times to retry before giving up? Zero means keep retrying.");
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
-			Input.ShowMessage("TMF Translations v0.2.0 (2021-05-07)");
-			Input.ShowMessage("TMF XTM Integration v0.2.0 (2021-05-07)");
+			Input.ShowMessage("TMF Translations v0.2.2 (2021-07-14)");
+			Input.ShowMessage("TMF XTM Integration v0.2.2 (2021-07-22)");
 			Input.EndControlPanel();
+		}
+
+		public void ConfigPostInput(Asset asset, PostInputContext context)
+		{
+			if (!context.ValidationErrorFields.Any() && context.InputForm[XTM_ACCESS_TOKEN_OPTION] == "Generate Token")
+			{
+				if (!context.InputForm.HasField(XTM_GENERATE_TOKEN_CLIENT) || string.IsNullOrWhiteSpace(context.InputForm[XTM_GENERATE_TOKEN_CLIENT]))
+				{
+					context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_CLIENT, "Please enter the Client if you are generating a new token.");
+				}
+				if (!context.InputForm.HasField(XTM_GENERATE_TOKEN_USERID) || string.IsNullOrWhiteSpace(context.InputForm[XTM_GENERATE_TOKEN_USERID]))
+				{
+					context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_USERID, "Please enter the User ID if you are generating a new token.");
+				}
+				else
+				{
+					int temp;
+					if (!int.TryParse(context.InputForm[XTM_GENERATE_TOKEN_USERID], out temp))
+					{
+						context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_USERID, "The User ID must be a number.");
+					}
+				}
+				if (!context.InputForm.HasField(XTM_GENERATE_TOKEN_PASSWORD) || string.IsNullOrWhiteSpace(context.InputForm[XTM_GENERATE_TOKEN_PASSWORD]))
+				{
+					context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_PASSWORD, "Please enter the Password if you are generating a new token.");
+				}
+				if (context.ValidationErrorFields.Any()) return;
+
+				// Prepare the credentials for the token generation call
+				var creds = new AuthRequest
+				{
+					Client = context.InputForm[XTM_GENERATE_TOKEN_CLIENT],
+					UserId = int.Parse(context.InputForm[XTM_GENERATE_TOKEN_USERID]),
+					Password = context.InputForm[XTM_GENERATE_TOKEN_PASSWORD]
+				};
+				if (context.InputForm.HasField(XTM_GENERATE_TOKEN_INTEGRATION_KEY) && !string.IsNullOrWhiteSpace(context.InputForm[XTM_GENERATE_TOKEN_INTEGRATION_KEY]))
+				{
+					creds.IntegrationKey = context.InputForm[XTM_GENERATE_TOKEN_INTEGRATION_KEY];
+				}
+
+				var endpoint = context.InputForm[XTM_API_ENDPOINT];
+				var tokenParms = new PostHttpParams
+				{
+					ContentType = "application/json",
+					PostData = Util.SerializeDataContractJson(creds)
+				};
+				var tokenResponse = Util.PostHttp(endpoint + "/auth/token", tokenParms);
+				if (tokenResponse.StatusCode != 200)
+				{
+					context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_CLIENT, "Response code " + tokenResponse.StatusCode + " received from XTM when trying to generate a token.");
+				}
+				else
+				{
+					var result = Util.DeserializeDataContractJson(tokenResponse.ResponseText, typeof(AuthResponse)) as AuthResponse;
+					if (result == null)
+					{
+						context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_CLIENT, "Empty response received from XTM when trying to generate a token.");
+					}
+					else if (string.IsNullOrWhiteSpace(result.Token))
+					{
+						context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_CLIENT, "Empty token received from XTM when trying to generate a token.");
+					}
+					else
+					{
+						// Finally make sure that the token is actually valid to get some data
+						var parms = new GetHttpParams();
+						parms.AddHeader("Authorization: XTM-Basic " + result.Token);
+						var projectsResponse = Util.GetHttp(endpoint + "/projects?customerId=9999&page=9999&pageSize=1", parms);
+						if (projectsResponse.StatusCode != 200)
+						{
+							context.ValidationErrorFields.Add(XTM_GENERATE_TOKEN_CLIENT, "Response code " + projectsResponse.StatusCode + " received from XTM when trying to validate the token.");
+						}
+						else
+						{
+							// Success!
+							context.InputForm[XTM_ACCESS_TOKEN] = result.Token;
+							context.InputForm[XTM_ACCESS_TOKEN_OPTION] = "Enter Token";
+							context.InputForm.Remove(new [] {XTM_GENERATE_TOKEN_CLIENT, XTM_GENERATE_TOKEN_USERID, XTM_GENERATE_TOKEN_PASSWORD, XTM_GENERATE_TOKEN_INTEGRATION_KEY});
+						}
+					}
+				}
+			}
 		}
 
 		public void TmfInput(Asset asset, InputContext context, int index, bool isResend)
@@ -726,7 +815,14 @@ namespace LocalProject
 			request.AppendLine("--" + boundary);
 			request.AppendLine("Content-Disposition: form-data; name=\"name\"");
 			request.AppendLine();
-			request.AppendLine("Translate asset '" + source.Label + "' (" + source.Id + ")");
+			var namePrefix = "Translate asset '";
+			var nameSuffix = "' (" + source.Id + ")";
+			var name = namePrefix + source.Label + nameSuffix;
+			if (name.Length > 100)
+			{
+				name = namePrefix + source.Label.Substring(0, 97 - namePrefix.Length - nameSuffix.Length) + "..." + nameSuffix;
+			}
+			request.AppendLine(name);
 			if (dueDate.HasValue)
 			{
 				request.AppendLine("--" + boundary);
