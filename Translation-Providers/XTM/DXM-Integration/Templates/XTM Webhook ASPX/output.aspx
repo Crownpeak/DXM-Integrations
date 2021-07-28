@@ -40,31 +40,39 @@
 		System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 		try
 		{
-			var customerId = Request.QueryString["xtmCustomerId"];
-			var xtmId = Request.QueryString["xtmProjectId"];
-			if (customerId != null && xtmId != null)
+			if (Request.QueryString["test"] == "true")
 			{
-				var referenceId = GetProjectReference(xtmId, customerId);
-				var xmlFiles = GetProjectResults(xtmId);
-				if (Request.QueryString["inline"] == "true")
+				xtmTest();
+				crownpeakTest();
+			}
+			else
+			{
+				var customerId = Request.QueryString["xtmCustomerId"];
+				var xtmId = Request.QueryString["xtmProjectId"];
+				if (customerId != null && xtmId != null)
 				{
-					if (!string.IsNullOrEmpty(referenceId))
+					var referenceId = GetProjectReference(xtmId, customerId);
+					var xmlFiles = GetProjectResults(xtmId);
+					if (Request.QueryString["inline"] == "true")
 					{
-						Response.Write(xmlFiles.Keys.First() + "\n");
-						Response.Write(xmlFiles.Values.First());
+						if (!string.IsNullOrEmpty(referenceId))
+						{
+							Response.Write(xmlFiles.Keys.First() + "\n");
+							Response.Write(xmlFiles.Values.First());
+						}
+						else
+						{
+							foreach (var key in xmlFiles.Keys)
+							{
+								Response.Write(key + "\n");
+								Response.Write(xmlFiles[key] + "\n");
+							}
+						}
 					}
 					else
 					{
-						foreach (var key in xmlFiles.Keys)
-						{
-							Response.Write(key + "\n");
-							Response.Write(xmlFiles[key] + "\n");
-						}
+						UpdateCmsReceiver(referenceId ?? "", xtmId, xmlFiles);
 					}
-				}
-				else
-				{
-					UpdateCmsReceiver(referenceId ?? "", xtmId, xmlFiles);
 				}
 			}
 		}
@@ -72,6 +80,49 @@
 		{
 			Response.Write(ex.Status);
 		}
+	}
+
+	public bool xtmTest()
+	{
+		Response.Write("Testing XTM...:");
+		Response.Flush();
+		var client = new System.Net.WebClient();
+		client.Headers.Add("Authorization", "XTM-Basic " + XTM_API_TOKEN);
+		var projectsResult = client.DownloadString(XTM_API_ENDPOINT + "/projects?customId=0&page=99999&pageSize=1");
+		var result = projectsResult == "[]";
+		Response.Write((result ? "ok" : "failed") + "<br/>\n");
+		Response.Flush();
+		return result;
+	}
+
+	public bool crownpeakTest()
+	{
+		Response.Write("Testing Crownpeak login...:");
+		Response.Flush();
+		var api = new AccessApi();
+		api.Init(INSTANCE, USERNAME, PASSWORD, DEVELOPER_KEY);
+		var result = api.Login();
+		Response.Write((result ? "ok" : "failed") + "<br/>\n");
+		Response.Flush();
+		if (result)
+		{
+			AccessApi.Asset asset;
+			Response.Write("Testing Crownpeak create asset...:");
+			Response.Flush();
+			result = api.CreateAsset("Test asset", FOLDER_ID, MODEL_ID, out asset);
+			Response.Write((result ? "ok" : "failed") + "<br/>\n");
+			Response.Flush();
+			if (result)
+			{
+				Response.Write("Testing Crownpeak update asset...:");
+				Response.Flush();
+				result = api.UpdateAsset(asset.Id, new Dictionary<string, string> {{"Test", "ing"}}, null, false, true, out asset);
+				Response.Write((result ? "ok" : "failed") + "<br/>\n");
+				Response.Flush();
+			}
+			api.Logout();
+		}
+		return result;
 	}
 
 	public void UpdateCmsReceiver(string cmsDocumentId, string xtmDocumentId, Dictionary<string, string> xmlFiles)

@@ -19,6 +19,7 @@ namespace LocalProject
 	 * 0.2.0   | 2021-05-07 | Support for multi-asset projects
 	 * 0.2.1   | 2021-07-14 | Add ConfigPostInput for Access Token generation
 	 * 0.2.2   | 2021-07-22 | Stop project name from exceeding 100 character limit
+	 * 0.2.3   | 2021-07-28 | Add test mode to webhooks
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -61,7 +62,17 @@ namespace LocalProject
 		{
 			Input.StartControlPanel("XTM Configuration");
 			Input.ShowTextBox("API Endpoint", XTM_API_ENDPOINT);
+			var options = new[] {"Enter Token", "Generate Token"}.ToDictionary(t => t);
+			Input.StartDropDownContainer("Provide XTM Token", XTM_ACCESS_TOKEN_OPTION, options, options.Values.Select(v => v).First());
+			// Enter token
 			Input.ShowTextBox("Access Token", XTM_ACCESS_TOKEN);
+			Input.NextDropDownContainer();
+			// Generate token
+			Input.ShowTextBox("Client", XTM_GENERATE_TOKEN_CLIENT);
+			Input.ShowTextBox("User ID", XTM_GENERATE_TOKEN_USERID, helpMessage:"This is numeric, and can be found by hovering over the 'i' icon on the right of each row on the Users screen.");
+			Input.ShowPassword("Password", XTM_GENERATE_TOKEN_PASSWORD);
+			Input.ShowTextBox("Integration Key", XTM_GENERATE_TOKEN_INTEGRATION_KEY, helpMessage:"This is optional, and the value will be provided by XTM if you need to use it.");
+			Input.EndDropDownContainer();
 			Input.ShowTextBox("Customer Id", XTM_CUSTOMER_ID);
 			Input.EndControlPanel();
 			Input.StartControlPanel("XTM Template Ids");
@@ -90,7 +101,7 @@ namespace LocalProject
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
 			Input.ShowMessage("TMF Translations v0.2.2 (2021-07-14)");
-			Input.ShowMessage("TMF XTM Integration v0.2.2 (2021-07-22)");
+			Input.ShowMessage("TMF XTM Integration v0.2.3 (2021-07-28)");
 			Input.EndControlPanel();
 		}
 
@@ -1223,7 +1234,11 @@ namespace LocalProject
 		public void ProcessTranslationComplete(Asset incomingAsset, bool overwrite)
 		{
 			var fields = incomingAsset.GetContent();
-			if (!fields.ContainsKey("xml_response") && fields.ContainsKey("xml_response:1"))
+			if (fields.ContainsKey("test") && fields["test"] == "ing")
+			{
+				// Test only - nothing to do
+			}
+			else if (!fields.ContainsKey("xml_response") && fields.ContainsKey("xml_response:1"))
 			{
 				var names = incomingAsset.GetPanels("xml_name").Select(p => p["xml_name"]).ToArray();
 				var xmls = incomingAsset.GetPanels("xml_response").Select(p => p["xml_response"]).ToArray();

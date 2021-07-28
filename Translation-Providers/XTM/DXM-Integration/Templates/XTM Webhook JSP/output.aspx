@@ -243,6 +243,33 @@ private static Boolean assetUpdate(JspWriter out, int id, Map<String, String> fi
 	return result.contains("conWS_Success");
 }
 
+private static Boolean crownpeakTest(JspWriter out) throws IOException {
+	out.print("Testing Crownpeak login...:");
+	out.flush();
+	Boolean result = login(out, Username, Password);
+	out.println((result ? "ok" : "failed") + "<br/>");
+	out.flush();
+	if (result) {
+		out.print("Testing Crownpeak create asset...:");
+		out.flush();
+		int id = assetCreate(out, FolderId, "Test asset", ModelId);
+		result = id != -1;
+		out.println((result ? "ok" : "failed") + "<br/>");
+		out.flush();
+		if (result) {
+			out.print("Testing Crownpeak update asset...:");
+			out.flush();
+			String data = String.format("{\"assetId\":%d,\"fields\":{\"test\":\"ing\"},\"runPostSave\":true}", id);
+			String updateResult = sendRequest(out, "POST", "/Asset/Update", data);
+			result = updateResult.contains("conWS_Success");
+			out.println((result ? "ok" : "failed") + "<br/>");
+			out.flush();
+		}
+		logout(out);
+	}
+	return result;
+}
+
 private static String xtmSendRequest(JspWriter out, String method, String path, String data) throws IOException {
 	return new String(xtmSendRequestBinary(out, method, path, data));
 }
@@ -367,69 +394,83 @@ private static String getReferenceId(JspWriter out, String projectId, String cus
 	}
 	return "";
 }
+private static boolean xtmTest(JspWriter out) throws IOException {
+	out.print("Testing XTM...: ");
+	out.flush();
+	String projectsResult = xtmSendRequest(out, "GET", "/projects?customId=0&page=99999&pageSize=1", "");
+	boolean result = projectsResult.equalsIgnoreCase("[]");
+	out.println((result ? "ok" : "failed") + "<br/>");
+	out.flush();
+	return result;
+}
 
 $><$
 
-String customerId = request.getParameter("xtmCustomerId");
-String xtmId = request.getParameter("xtmProjectId");
-
-if (customerId == null) {
-	//out.println("Error: Missing customerId");
-} else if (xtmId == null) {
-	//out.println("Error: Missing xtmId");
+if ("true".equals(request.getParameter("test"))) {
+	xtmTest(out);
+	crownpeakTest(out);
 } else {
+	String customerId = request.getParameter("xtmCustomerId");
+	String xtmId = request.getParameter("xtmProjectId");
 
-	String referenceId = getReferenceId(out, xtmId, customerId);
-  //out.println("Found " + referenceId);
-
-	int fileId = generateTarget(out, xtmId);
-	boolean finished = waitForFile(out, xtmId, fileId);
-	byte[] content = downloadFile(out, xtmId, fileId);
-	HashMap<String, String> xmlFiles = extractFile(out, content);
-
-	if ("true".equals(request.getParameter("inline"))) {
-		for (String name : xmlFiles.keySet()) {
-			out.println(name);
-			out.println(xmlFiles.get(name));
-		}
+	if (customerId == null) {
+		//out.println("Error: Missing customerId");
+	} else if (xtmId == null) {
+		//out.println("Error: Missing xtmId");
 	} else {
 
-		Boolean loggedIn = login(out, Username, Password);
-		//out.println("DEBUG: Login success = " + loggedIn);
+		String referenceId = getReferenceId(out, xtmId, customerId);
+	  //out.println("Found " + referenceId);
 
-		if (!loggedIn) {
-	      //out.println("Error: Unable to log in");
-	    } else {
-				String assetName = referenceId;
-				if (assetName.length() == 0) assetName = Instant.now().toString();
-    		int assetId = assetCreate(out, FolderId, assetName, ModelId);
-				//out.println("DEBUG: Create success = " + (assetId > 0));
-    		if (assetId > 0) {    	
-				Map<String, String> fields = new HashMap<String, String>();
-				fields.put("cms_document_id", referenceId);
-				fields.put("xtm_document_id", xtmId);
-				if (referenceId.length() > 0) {
-					for (String name : xmlFiles.keySet()) {
-						fields.put("xml_response", xmlFiles.get(name));
-						break;
+		int fileId = generateTarget(out, xtmId);
+		boolean finished = waitForFile(out, xtmId, fileId);
+		byte[] content = downloadFile(out, xtmId, fileId);
+		HashMap<String, String> xmlFiles = extractFile(out, content);
+
+		if ("true".equals(request.getParameter("inline"))) {
+			for (String name : xmlFiles.keySet()) {
+				out.println(name);
+				out.println(xmlFiles.get(name));
+			}
+		} else {
+
+			Boolean loggedIn = login(out, Username, Password);
+			//out.println("DEBUG: Login success = " + loggedIn);
+
+			if (!loggedIn) {
+		      //out.println("Error: Unable to log in");
+		    } else {
+					String assetName = referenceId;
+					if (assetName.length() == 0) assetName = Instant.now().toString();
+    			int assetId = assetCreate(out, FolderId, assetName, ModelId);
+					//out.println("DEBUG: Create success = " + (assetId > 0));
+    			if (assetId > 0) {    	
+					Map<String, String> fields = new HashMap<String, String>();
+					fields.put("cms_document_id", referenceId);
+					fields.put("xtm_document_id", xtmId);
+					if (referenceId.length() > 0) {
+						for (String name : xmlFiles.keySet()) {
+							fields.put("xml_response", xmlFiles.get(name));
+							break;
+						}
+					} else {
+						int index = 1;
+						for (String name : xmlFiles.keySet()) {
+							fields.put("xml_name:" + index, name);
+							fields.put("xml_response:" + index, xmlFiles.get(name));
+							index++;
+						}
 					}
-				} else {
-					int index = 1;
-					for (String name : xmlFiles.keySet()) {
-						fields.put("xml_name:" + index, name);
-						fields.put("xml_response:" + index, xmlFiles.get(name));
-						index++;
+					Boolean success = assetUpdate(out, assetId, fields);
+					//out.println("DEBUG: Update success = " + success);
+					if (success) {
+						out.println("Success");
 					}
-				}
-				Boolean success = assetUpdate(out, assetId, fields);
-				//out.println("DEBUG: Update success = " + success);
-				if (success) {
-					out.println("Success");
-				}
-   		}
-			// Tidy up
-			logout(out);
-    }
+   			}
+				// Tidy up
+				logout(out);
+	    }
+		}
 	}
 }
 $>
