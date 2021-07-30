@@ -21,6 +21,7 @@ namespace LocalProject
 	 * 0.2.0   | 2021-05-07 | Support for multi-asset projects
 	 * 0.2.1   | 2021-07-08 | Include upload# bug fix from OCD-21746
 	 * 0.2.2   | 2021-07-14 | Add ConfigPostInput to ITMFTranslator
+	 * 0.2.3   | 2021-07-30 | Include bug fixes with overwriting from OCD-19610
 	 */
 	#region "LocaleId Class"
 
@@ -1422,40 +1423,9 @@ namespace LocalProject
 
 								if (bExist)
 								{
-									var bDest = false;
-									if (Equals(nDestinationId, 0))
-									{
-										var szDest = Asset.Load(aDestLanguageContent.Raw["folder_root"]).AssetPath.ToString();
-										for (var nFolderIndex = Asset.Load(aDestLanguageContent.Raw["folder_root"]).AssetPath.Count;
-											nFolderIndex < asset.Parent.AssetPath.Count;
-											nFolderIndex++)
-										{
-											szDest += "/" + asset.AssetPath[nFolderIndex];
-										}
-
-										szDest += "/" + asset.Label;
-
-										var aDest = Asset.Load(szDest);
-										if (aDest.IsLoaded)
-										{
-											bDest = true;
-										}
-									}
-
-									CrownPeak.CMSAPI.Input.AddHiddenField("tmf_language_selected_panel:" + nIndex,
-										(nIndex - 1).ToString());
-									//if (!int.Equals(nDestinationId, 0) || bDest)
+									CrownPeak.CMSAPI.Input.AddHiddenField("tmf_language_selected_panel:" + nIndex, (nIndex - 1).ToString());
 									CrownPeak.CMSAPI.Input.StartControlPanel(aDestLanguageContent.Label);
 
-									var szHelpMsg = string.Empty;
-									if (!Equals(nDestinationId, 0))
-									{
-										szHelpMsg = "Note: This checkbox needs to be checked to re-send for translation";
-									}
-
-									CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex,
-										aDestLanguageContent.Id.ToString(),
-										aDestLanguageContent.Label, szHelpMsg);
 									if (Equals(nDestinationId, 0))
 									{
 										//CMSAPI.Input.ShowMessage(asset.Parent.AssetPath.Count.ToString());
@@ -1473,21 +1443,30 @@ namespace LocalProject
 										var aDest = Asset.Load(szDest);
 										if (aDest.IsLoaded)
 										{
+											// A destination asset exists, but there is no relationship at the moment.
+											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
+												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship to the existing asset.");
 											CrownPeak.CMSAPI.Input.ShowMessage("'" + aDest.AssetPath + "' exists without relationship.");
 											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_overwrite_existing_asset:" + nIndex, "y",
-												"Create Relationship and Overwrite Existing Asset");
+												"Overwrite Existing Asset", "Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.");
+										}
+										else
+										{
+											// No destination asset exists (and there's no relationship).
+											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
+												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship, and create a derived asset at '" + szDest + "'.");
 										}
 
 										//CMSAPI.Input.ShowMessage(szTempFolder);
 										//CMSAPI.Input.ShowMessage(asset.Label + " : " + aDestLanguageContent.Label + " : " + aDestLanguageContent.AssetPath.ToString());
 									}
-
-									if (!Equals(nDestinationId, 0))
+									else
 									{
-										szHelpMsg =
-											"Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.";
+										// A destination asset exists with a relationship.
+										CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
+											aDestLanguageContent.Label, "Note: This checkbox needs to be checked to re-send for translation.");
 										CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_overwrite_existing_asset:" + nIndex, "y",
-											"Overwrite Existing Translation Asset", szHelpMsg);
+											"Overwrite Existing Translation Asset",  "Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.");
 										CrownPeak.CMSAPI.Input.ShowLink(nDestinationId,
 											"Existing Translation: " + Asset.Load(nDestinationId).Label + " (" + nDestinationId + ")",
 											InputLinkType.EditTab);
@@ -2112,6 +2091,8 @@ namespace LocalProject
 								if (aLanguageContent.IsLoaded)
 								{
 									var szConfigAssetId = "";
+
+									// Iterate through all of the relationship configuration assets until we find one that matches the destination asset.
 									foreach (var aConfigList in laConfigList)
 									{
 										if (Asset.Load(aConfigList.Raw["destination_id"]).AssetPath.ToString().ToLower()
@@ -2123,40 +2104,45 @@ namespace LocalProject
 									}
 
 									var aConfigContent = Asset.Load(szConfigAssetId);
-									Asset aDestTmpContent = null;
-									if (string.IsNullOrWhiteSpace(szConfigAssetId) ||
-											!Asset.Load(aConfigContent["destination_id"]).IsLoaded)
+									Asset aDestTmpContent = Asset.Load(aConfigContent["destination_id"]);
+									var bSendNotificationsToOwners = true;
+
+									// Check if there's a destination asset with a relationship.
+									if (string.IsNullOrWhiteSpace(szConfigAssetId) || !aDestTmpContent.IsLoaded)
 									{
+										// Create the asset if it doesn't exist, and/or create the relationship if it doesn't exist.
 										var szTranslatedId = CreateTranslatedAsset(aContentSource, aSourceLanguageContent, aLanguageContent,
 											szConfigAssetId, szSitePath);
+
+										// Load this asset (possibly newly created) as the destination
 										aDestTmpContent = Asset.Load(szTranslatedId);
+
 										FixRelativeLinks(aDestTmpContent, aSourceLanguageContent, aLanguageContent, szSitePath);
 										SendNotification(aContentSource, aDestTmpContent, aLanguageContent, context.ClientName, context,
 											szSitePath);
+
+										bSendNotificationsToOwners = false; // No need to send notifications again below, so set flag here to prevent it
 									}
-									else
+
+									// Check if the 'Overwrite Existing Asset'/'Overwrite Existing Translation Asset' checkbox is selected.
+									if (string.Equals(peSelectedLangList.Raw["tmf_overwrite_existing_asset"], "y", StringComparison.OrdinalIgnoreCase))
 									{
-										if (string.Equals(peSelectedLangList.Raw["tmf_overwrite_existing_asset"], "y",
-											StringComparison.OrdinalIgnoreCase))
-										{
-											//Out.DebugWriteLine("inside overwrite");
+										var tempSourcContent = asset.GetContent().ToDictionary(x => x.Key, x => x.Value);
 
-											var tempSourcContent = asset.GetContent().ToDictionary(x => x.Key, x => x.Value);
+										// Because TMF processing duplicates certain content properties, we need to remove them before saving back to the asset.
+										var adjustedContent = RemoveTmfDuplicates(tempSourcContent);
 
-											// Because TMF processing duplicates certain content properties, we need to remove them before saving back to the asset.
-											var adjustedContent = ServicesTMF.RemoveTmfDuplicates(tempSourcContent);
+										// Save adjusted content from source asset to destination asset
+										aDestTmpContent.SaveContent(adjustedContent);
 
-											Asset.Load(aConfigContent.Raw["destination_id"]).SaveContent(adjustedContent);
-											aDestTmpContent = Asset.Load(aConfigContent["destination_id"]);
+										// Re-load destination asset
+										aDestTmpContent = Asset.Load(aConfigContent["destination_id"]);
 
-											//Out.DebugWriteLine("aDestTmpContent.Id=" + aDestTmpContent.Id);
-											//Out.DebugWriteLine("aSourceLanguageContent.Id=" + aSourceLanguageContent.Id);
-											//Out.DebugWriteLine("aLanguageContent.Id=" + aLanguageContent.Id);
-											//Out.DebugWriteLine("szSitePath=" + szSitePath);
+										FixRelativeLinks(aDestTmpContent, aSourceLanguageContent, aLanguageContent, szSitePath);
+									}
 
-											FixRelativeLinks(aDestTmpContent, aSourceLanguageContent, aLanguageContent, szSitePath);
-										}
-
+									if (bSendNotificationsToOwners)
+									{
 										SendNotificationsToOwners(aContentSource,
 											Asset.Load(aConfigContent.Raw["destination_id"]).Id.ToString(), context.ClientName, context,
 											szSitePath);
