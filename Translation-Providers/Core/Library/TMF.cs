@@ -22,6 +22,7 @@ namespace LocalProject
 	 * 0.2.1   | 2021-07-08 | Include upload# bug fix from OCD-21746
 	 * 0.2.2   | 2021-07-14 | Add ConfigPostInput to ITMFTranslator
 	 * 0.2.3   | 2021-07-30 | Include bug fixes with overwriting from OCD-19610
+	 * 0.2.4   | 2021-09-01 | Bug fix in LoadProjectPostInput
 	 */
 	#region "LocaleId Class"
 
@@ -1244,7 +1245,7 @@ namespace LocalProject
 				var createOnSave = context.InputForm["create_project"] == "true";
 				if (createOnSave)
 				{
-					var languagePanels = asset.GetPanels("tmf_language_selected");
+					var languagePanels = context.InputForm.GetPanels("tmf_language_selected");
 					var selectedLanguages = languagePanels.Select(p => p.Raw["tmf_language_selected"]).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 					if (!selectedLanguages.Any())
 					{
