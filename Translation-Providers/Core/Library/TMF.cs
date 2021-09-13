@@ -23,6 +23,7 @@ namespace LocalProject
 	 * 0.2.2   | 2021-07-14 | Add ConfigPostInput to ITMFTranslator
 	 * 0.2.3   | 2021-07-30 | Include bug fixes with overwriting from OCD-19610
 	 * 0.2.4   | 2021-09-01 | Bug fix in LoadProjectPostInput
+	 * 0.2.5   | 2021-09-13 | Bug fixes from OCD-19344 and OCD-21658
 	 */
 	#region "LocaleId Class"
 
@@ -239,7 +240,7 @@ namespace LocalProject
 			foreach (var szFolderName in folderArray)
 			{
 				folderSourcePath += (string.IsNullOrWhiteSpace(folderSourcePath) ? sourceFolderRoot : "") + "/" + szFolderName;
-				folderDestPath = folderSourcePath.Replace(sourceFolderRoot, destinationFolderRoot);
+				folderDestPath = folderSourcePath.ToLower().Replace(sourceFolderRoot.ToLower(), destinationFolderRoot.ToLower());
 
 				var folderDestAsset = Asset.Load(folderDestPath);
 				if (!folderDestAsset.IsLoaded)
@@ -286,8 +287,8 @@ namespace LocalProject
 			Asset destinationLanguageAsset, string relationshipAssetId, string sitePath)
 		{
 			//Replace the folder root of the contentSourceAsset with the folder root of the destinationLanguageAsset
-			var szNewFolder = contentSourceAsset.Parent.AssetPath.ToString()
-				.Replace(sourceLanguageAsset["folder_root"], destinationLanguageAsset["folder_root"]);
+			var szNewFolder = contentSourceAsset.Parent.AssetPath.ToString().ToLower()
+				.Replace(sourceLanguageAsset["folder_root"].ToLower(), destinationLanguageAsset["folder_root"].ToLower());
 
 			//if the new folder doesn't exist
 			if (!Asset.Load(szNewFolder).IsLoaded)
@@ -674,9 +675,9 @@ namespace LocalProject
 				{
 					//load the linked asset
 					var aLinkedItem = Asset.Load(kvpData.Value);
-					var linkedItemPath = aLinkedItem.AssetPath.ToString();
+					var linkedItemPath = aLinkedItem.AssetPath.ToString().ToLower();
 					var szDestinationPath =
-						linkedItemPath.Replace(sourceLanguageContent["folder_root"], destLanguageContent["folder_root"]);
+						linkedItemPath.Replace(sourceLanguageContent["folder_root"].ToLower(), destLanguageContent["folder_root"].ToLower());
 
 					var nFixLinkFlag = 0;
 					if (Asset.Load(szDestinationPath).IsLoaded && !string.Equals(linkedItemPath, szDestinationPath))
@@ -1424,21 +1425,14 @@ namespace LocalProject
 
 								if (bExist)
 								{
-									CrownPeak.CMSAPI.Input.AddHiddenField("tmf_language_selected_panel:" + nIndex, (nIndex - 1).ToString());
+									CrownPeak.CMSAPI.Input.AddHiddenField("tmf_language_selected_panel:" + nIndex, (nIndex - 1).ToString(), alwaysSend: true);
 									CrownPeak.CMSAPI.Input.StartControlPanel(aDestLanguageContent.Label);
 
 									if (Equals(nDestinationId, 0))
 									{
 										//CMSAPI.Input.ShowMessage(asset.Parent.AssetPath.Count.ToString());
 										//Input.ShowMessage(Asset.Load(aDestLanguageContent.Raw["folder_root"]).AssetPath.Count.ToString());
-										var szDest = Asset.Load(aDestLanguageContent.Raw["folder_root"]).AssetPath.ToString();
-										for (var nFolderIndex = Asset.Load(aDestLanguageContent.Raw["folder_root"]).AssetPath.Count;
-											nFolderIndex < asset.Parent.AssetPath.Count;
-											nFolderIndex++)
-										{
-											szDest += "/" + asset.AssetPath[nFolderIndex];
-										}
-
+										var szDest = asset.Parent.AssetPath.ToString().ToLower().Replace(aSourceLanguageContent["folder_root"].ToLower(), aDestLanguageContent["folder_root"].ToLower());
 										szDest += "/" + asset.Label;
 
 										var aDest = Asset.Load(szDest);
@@ -1446,7 +1440,7 @@ namespace LocalProject
 										{
 											// A destination asset exists, but there is no relationship at the moment.
 											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
-												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship to the existing asset.");
+												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship to the existing asset.", alwaysSend: true);
 											CrownPeak.CMSAPI.Input.ShowMessage("'" + aDest.AssetPath + "' exists without relationship.");
 											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_overwrite_existing_asset:" + nIndex, "y",
 												"Overwrite Existing Asset", "Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.");
@@ -1455,7 +1449,7 @@ namespace LocalProject
 										{
 											// No destination asset exists (and there's no relationship).
 											CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
-												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship, and create a derived asset at '" + szDest + "'.");
+												aDestLanguageContent.Label, "Note: Checking this checkbox will create a relationship, and create a derived asset at '" + szDest + "'.", alwaysSend: true);
 										}
 
 										//CMSAPI.Input.ShowMessage(szTempFolder);
@@ -1465,9 +1459,9 @@ namespace LocalProject
 									{
 										// A destination asset exists with a relationship.
 										CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_language_selected:" + nIndex, aDestLanguageContent.Id.ToString(),
-											aDestLanguageContent.Label, "Note: This checkbox needs to be checked to re-send for translation.");
+											aDestLanguageContent.Label, "Note: This checkbox needs to be checked to re-send for translation.", alwaysSend: true);
 										CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_overwrite_existing_asset:" + nIndex, "y",
-											"Overwrite Existing Translation Asset",  "Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.");
+											"Overwrite Existing Translation Asset",  "Note: This will overwrite when 'Translate Current Asset Only' is selected in option below and the checkbox above is checked.", alwaysSend: true);
 										CrownPeak.CMSAPI.Input.ShowLink(nDestinationId,
 											"Existing Translation: " + Asset.Load(nDestinationId).Label + " (" + nDestinationId + ")",
 											InputLinkType.EditTab);
@@ -1489,7 +1483,7 @@ namespace LocalProject
 							{
 								{"Translate Current Asset Only", "0"},
 								{"Translate Multiple Folder(s)", "1"}
-							}, "0");
+							}, "0", alwaysSend: true);
 						CrownPeak.CMSAPI.Input.NextDropDownContainer();
 
 						if (context.UIType != UIType.V3)
@@ -1521,14 +1515,14 @@ namespace LocalProject
 										CrownPeak.CMSAPI.Input.StartControlPanel(aFolder.Label);
 
 										CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_folder_" + aFolder.Id, "y",
-											aFolder.AssetPath.ToString());
+											aFolder.AssetPath.ToString(), alwaysSend: true);
 
 										if (laSubFolders.Count > 0)
 										{
 											foreach (var aSubFolder in laSubFolders)
 											{
 												CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_folder_" + aSubFolder.Id, "y",
-													aSubFolder.AssetPath.ToString());
+													aSubFolder.AssetPath.ToString(), alwaysSend: true);
 											}
 										}
 
@@ -1574,12 +1568,12 @@ namespace LocalProject
 						var dtRelationshipType = new Dictionary<string, string>();
 						dtRelationshipType.Add("Select Master asset (current Content becomes Derived)", "1");
 						dtRelationshipType.Add("Select Derived asset (current Content becomes Master)", "2");
-						CrownPeak.CMSAPI.Input.ShowRadioButton("", "tmf_relationship_type", dtRelationshipType, "2");
+						CrownPeak.CMSAPI.Input.ShowRadioButton("", "tmf_relationship_type", dtRelationshipType, "2", alwaysSend: true);
 
 						var sapDoc = new ShowAcquireParams();
 						sapDoc.ShowBrowse = true;
 						sapDoc.ShowUpload = true;
-						CrownPeak.CMSAPI.Input.ShowAcquireDocument("", "tmf_related_link_internal", sapDoc);
+						CrownPeak.CMSAPI.Input.ShowAcquireDocument("", "tmf_related_link_internal", sapDoc, alwaysSend: true);
 
 						if (!string.IsNullOrWhiteSpace(szContentRelTMFDest))
 						{
@@ -1591,7 +1585,7 @@ namespace LocalProject
 							if (IsMasterAssetChanges(asset, szSitePath))
 							{
 								CrownPeak.CMSAPI.Input.ShowCheckBox("", "tmf_confirm_translation", "y",
-									"Update master(" + aSourceLanguageContent.Label + ") changes");
+									"Update master(" + aSourceLanguageContent.Label + ") changes", alwaysSend: true);
 							}
 							else
 							{
@@ -2160,6 +2154,9 @@ namespace LocalProject
 
 									asset.DeleteContentField("tmf_language_selected:" + nIndexPanel);
 									asset.DeleteContentField("tmf_language_selected_panel:" + nIndexPanel);
+
+									// Pass a flag back to the frontend to indicate a reload is needed
+									context.ReloadEdit = true;
 								}
 							}
 
@@ -2231,6 +2228,9 @@ namespace LocalProject
 										nIndexPanel++;
 									}
 								}
+
+								// Pass a flag back to the frontend to indicate a reload is needed
+								context.ReloadEdit = true;
 							}
 						}
 					}
@@ -2267,6 +2267,8 @@ namespace LocalProject
 						{
 							SendNotificationsToOwners(aContentSource, szContentDestId, context.ClientName, context, szSitePath);
 						}
+
+						context.ReloadEdit = true;
 					}
 
 					if (string.Equals(asset.Raw["tmf_confirm_translation"], "y", StringComparison.OrdinalIgnoreCase))
