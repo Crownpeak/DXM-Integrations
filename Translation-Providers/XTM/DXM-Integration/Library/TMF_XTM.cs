@@ -20,6 +20,7 @@ namespace LocalProject
 	 * 0.2.1   | 2021-07-14 | Add ConfigPostInput for Access Token generation
 	 * 0.2.2   | 2021-07-22 | Stop project name from exceeding 100 character limit
 	 * 0.2.3   | 2021-07-28 | Add test mode to webhooks
+	 * 0.2.4   | 2021-09-27 | Fix bug with attached files in Visual Mode
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -101,7 +102,7 @@ namespace LocalProject
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
 			Input.ShowMessage("TMF Translations v0.2.5 (2021-09-13)");
-			Input.ShowMessage("TMF XTM Integration v0.2.3 (2021-07-28)");
+			Input.ShowMessage("TMF XTM Integration v0.2.4 (2021-09-27)");
 			Input.EndControlPanel();
 		}
 
@@ -1153,9 +1154,10 @@ namespace LocalProject
 				case "jpeg":
 				case "jpg":
 					return "image/jpeg";
+				case "svg":
+					return "image/svg+xml";
 			}
-			extension = "";
-			return "";
+			return "application/octet-stream";
 		}
 
 		private void SendErrorNotification(Asset log, Exception ex)
