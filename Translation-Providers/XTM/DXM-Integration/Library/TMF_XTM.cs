@@ -21,6 +21,7 @@ namespace LocalProject
 	 * 0.2.2   | 2021-07-22 | Stop project name from exceeding 100 character limit
 	 * 0.2.3   | 2021-07-28 | Add test mode to webhooks
 	 * 0.2.4   | 2021-09-27 | Fix bug with attached files in Visual Mode
+	 * 0.2.5   | 2021-09-28 | Fix bug with attached files from projects in Visual Mode
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -102,7 +103,7 @@ namespace LocalProject
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
 			Input.ShowMessage("TMF Translations v0.2.5 (2021-09-13)");
-			Input.ShowMessage("TMF XTM Integration v0.2.4 (2021-09-27)");
+			Input.ShowMessage("TMF XTM Integration v0.2.5 (2021-09-28)");
 			Input.EndControlPanel();
 		}
 
@@ -934,7 +935,7 @@ namespace LocalProject
 								counter++;
 							}
 						}
-						match = regex.Match(content);
+						match = regex.Match(content, match.Index + 1);
 					}
 				}
 
@@ -1069,6 +1070,7 @@ namespace LocalProject
 				boundary = GetBoundary();
 
 				i = 0;
+				request.Clear();
 				foreach (var source in sources)
 				{
 					// Pull out any images
@@ -1097,19 +1099,19 @@ namespace LocalProject
 								}
 							}
 
-							match = regex.Match(content);
+							match = regex.Match(content, match.Index + 1);
 						}
 					}
 
-					request.Clear();
 					request.AppendLine("--" + boundary);
 					request.AppendLine("Content-Disposition: form-data; name=\"previewFiles[" + i + "].file\"; filename=\"" + sources[i].Id + ".html\"");
 					request.AppendLine("Content-Type: text/html");
 					request.AppendLine();
 					request.AppendLine(config.VisualModeHeader + content + config.VisualModeFooter);
 					request.Append(images);
-					request.AppendLine("--" + boundary + "--");
+					i++;
 				}
+				request.AppendLine("--" + boundary + "--");
 
 				parms = new PostHttpParams
 				{
