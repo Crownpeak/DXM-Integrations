@@ -22,6 +22,8 @@ namespace LocalProject
 	 * 0.2.3   | 2021-07-28 | Add test mode to webhooks
 	 * 0.2.4   | 2021-09-27 | Fix bug with attached files in Visual Mode
 	 * 0.2.5   | 2021-09-28 | Fix bug with attached files from projects in Visual Mode
+	 * 0.2.6   | 2021-10-04 | Add overwrite support for projects and fix it for individual files
+	 * 0.3.0   | 2021-10-07 | Updates to properly support overwrite after translation, relinking, and notification after failure to overwrite
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -102,8 +104,8 @@ namespace LocalProject
 			Input.ShowTextBox("Retry Count for Translation Status", XTM_RETRY_COUNT, helpMessage: "How many times to retry before giving up? Zero means keep retrying.");
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
-			Input.ShowMessage("TMF Translations v0.2.5 (2021-09-13)");
-			Input.ShowMessage("TMF XTM Integration v0.2.5 (2021-09-28)");
+			Input.ShowMessage("TMF Translations v0.3.0 (2021-10-07)");
+			Input.ShowMessage("TMF XTM Integration v0.3.0 (2021-10-07)");
 			Input.EndControlPanel();
 		}
 
@@ -228,6 +230,12 @@ namespace LocalProject
 				helpMessage = "Visual Mode is not configured and therefore not available.";
 			}
 			Input.ShowRadioButton("Project options", XTM_PROJECT_OPTIONS_FIELD, options, options.First().Value, helpMessage);
+			var yesno = new Dictionary<string, string>
+			{
+				{ "Yes", "y" },
+				{ "No", "n" }
+			};
+			Input.ShowRadioButton("Overwrite existing translation asset(s) (if applicable)", "overwrite_existing_asset", yesno, "n");
 		}
 
 		public void ProjectPostInput(Asset asset, PostInputContext context)
@@ -251,8 +259,17 @@ namespace LocalProject
 				{XTM_TMF_DUE_DATE_FIELD, asset.Raw[XTM_TMF_DUE_DATE_FIELD]}
 			};
 		}
-		
-		public void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination)
+
+		public bool IsTranslationRequired(Asset asset, PanelEntry panel, int index)
+		{
+			if (panel != null)
+			{
+				return !string.IsNullOrWhiteSpace(panel.Raw[XTM_TMF_FIELD]) && panel.Raw[XTM_TMF_FIELD] != "none";
+			}
+			return !string.IsNullOrWhiteSpace(asset.Raw[XTM_TMF_FIELD]) && asset.Raw[XTM_TMF_FIELD] != "none";
+		}
+
+		public void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination, bool overwrite, Context context)
 		{
 			try
 			{
@@ -305,7 +322,7 @@ namespace LocalProject
 					throw new Exception("TranslateAsset: Null response received from SendForTranslation.");
 				}
 
-				CreateLog(type, source, sourceLocale, destination, destLocale, response);
+				CreateLog(type, source, sourceLocale, destination, destLocale, overwrite, context, response);
 			}
 			catch (Exception ex)
 			{
@@ -313,7 +330,7 @@ namespace LocalProject
 			}
 		}
 
-		public void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets)
+		public void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context)
 		{
 			try
 			{
@@ -362,7 +379,7 @@ namespace LocalProject
 					throw new Exception("TranslateAsset: Null response received from SendForTranslation.");
 				}
 
-				CreateProjectLog(project, sources, targetLocales, targets, response);
+				CreateProjectLog(project, sources, targetLocales, targets, overwrite, context, response);
 			}
 			catch (Exception ex)
 			{
@@ -371,7 +388,7 @@ namespace LocalProject
 				SendErrorNotification("TranslateProject error: " + ex.Message);
 			}
 		}
-		public Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, object translationResponse)
+		public Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, bool overwrite, Context context, object translationResponse)
 		{
 			var response = translationResponse as XtmMyProjectCreateResponse;
 			if (response == null)
@@ -395,6 +412,8 @@ namespace LocalProject
 				{ "status_date", date },
 				{ "project_id", response.ProjectId.ToString() },
 				{ "job_id", response.JobId.ToString() },
+				{ "overwrite", overwrite ? "true" : "false" },
+				{ "user_name", context.UserInfo.Username },
 				{ "status", "" }
 			};
 			var label = DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss-fffff") + "-" + source.Id + "-" + destination.Id;
@@ -416,7 +435,7 @@ namespace LocalProject
 			}
 		}
 
-		public Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, object translationResponse)
+		public Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context, object translationResponse)
 		{
 			var response = translationResponse as XtmMyProjectCreateResponse;
 			if (response == null)
@@ -441,6 +460,8 @@ namespace LocalProject
 				{ "status_date", date },
 				{ "project_id", response.ProjectId.ToString() },
 				{ "job_id", response.JobId.ToString() },
+				{ "overwrite", overwrite ? "true" : "false" },
+				{ "user_name", context.UserInfo.Username },
 				{ "status", "" }
 			};
 			var index = 1;
@@ -658,6 +679,9 @@ namespace LocalProject
 				Out.WriteLine("<tr><td>Destination asset:</td><td>" + dest.AssetPath + "</td></tr>");
 				Out.WriteLine("<tr><td>Destination locale:</td><td>" + log["dest_locale"] + "</td></tr>");
 			}
+			var user = User.Load(log["user_name"]);
+			if (user != null)
+				Out.WriteLine("<tr><td>User:</td><td>" + user.Email + "</td></tr>");
 			Out.WriteLine("<tr><td>Xtm project id:</td><td>" + log["project_id"] + "</td></tr>");
 			Out.WriteLine("<tr><td>Xtm job id:</td><td>" + log["job_id"] + "</td></tr>");
 			if (!string.IsNullOrWhiteSpace(log.Raw["count_characters"]))
@@ -828,13 +852,13 @@ namespace LocalProject
 			request.AppendLine("--" + boundary);
 			request.AppendLine("Content-Disposition: form-data; name=\"name\"");
 			request.AppendLine();
-			var namePrefix = "Translate asset '";
-			var nameSuffix = "' (" + source.Id + ")";
-			var name = namePrefix + source.Label + nameSuffix;
-			if (name.Length > 100)
-			{
-				name = namePrefix + source.Label.Substring(0, 97 - namePrefix.Length - nameSuffix.Length) + "..." + nameSuffix;
-			}
+      var namePrefix = "Translate asset '";
+      var nameSuffix = "' (" + source.Id + ")";
+      var name = namePrefix + source.Label + nameSuffix;
+      if (name.Length > 100)
+      {
+      	name = namePrefix + source.Label.Substring(0, 97 - namePrefix.Length - nameSuffix.Length) + "..." + nameSuffix;
+      }
 			request.AppendLine(name);
 			if (dueDate.HasValue)
 			{
@@ -931,6 +955,16 @@ namespace LocalProject
 							var mimeType = GetMimeType(match.Value, out extension);
 							if (!string.IsNullOrWhiteSpace(mimeType))
 							{
+								// TODO: This should work but I can't convert a byte array to a string without needing encoding
+								//images.AppendLine("--" + boundary);
+								//images.AppendLine("Content-Disposition: form-data; name=\"previewFiles[" + counter + "].file\"; filename=\"image" + counter + "." + extension + "\"");
+								//images.AppendLine("Content-Type: " + mimeType);
+								//images.AppendLine();
+								//images.Append(Convert.FromBase64String(img)).AppendLine();
+								// Replace all occurrences of this string in the resulting image to avoid sending duplicate images
+								//content = content.Replace(match.Value, "image" + counter + "." + extension);
+
+								// Workaround using data-uris which does work
 								content = content.Replace(match.Value, "data:" + mimeType + ";base64," + img);
 								counter++;
 							}
@@ -1094,6 +1128,16 @@ namespace LocalProject
 								var mimeType = GetMimeType(match.Value, out extension);
 								if (!string.IsNullOrWhiteSpace(mimeType))
 								{
+									// TODO: This should work but I can't convert a byte array to a string without needing encoding
+									//images.AppendLine("--" + boundary);
+									//images.AppendLine("Content-Disposition: form-data; name=\"previewFiles[" + counter + "].file\"; filename=\"image" + counter + "." + extension + "\"");
+									//images.AppendLine("Content-Type: " + mimeType);
+									//images.AppendLine();
+									//images.Append(Convert.FromBase64String(img)).AppendLine();
+									// Replace all occurrences of this string in the resulting image to avoid sending duplicate images
+									//content = content.Replace(match.Value, "image" + counter + "." + extension);
+
+									// Workaround using data-uris which does work
 									content = content.Replace(match.Value, "data:" + mimeType + ";base64," + img);
 									counter++;
 								}
@@ -1289,6 +1333,7 @@ namespace LocalProject
 				{
 					FinishDate = 1
 				});
+				overwrite = log["overwrite"] == "true";
 			}
 
 			// Get the fields from our XML
@@ -1299,15 +1344,36 @@ namespace LocalProject
 			}
 
 			if (!overwrite)
-			{ 
+			{
 				if (!TMF.Translation.VerifyHash(asset))
 				{
-					throw new Exception("ProcessTranslationComplete: Destination asset has been changed while awaiting translation.");
+					if (log != null && log.IsLoaded && User.Load(log["user_name"]) != null)
+					{
+						var body = "The translation has not been applied to the destination asset, as it was changed in the CMS before the translation was completed.\n\n" +
+						           "To avoid this in future, check the 'Overwrite Existing Translation Asset' box to ensure the completed translation overwrites the destination asset in the CMS.\n\n" +
+						           "Source asset: " + Asset.LoadDirect(sourceId).AssetPath + "\n" +
+						           "Destination asset: " + asset.AssetPath + "\n" +
+						           "XTM project id: " + log.Raw["project_id"];
+						Util.Email("XTM Translation - Translation not applied", body, User.Load(log["user_name"]).Email);
+						return;
+					}
+					else
+					{
+						throw new Exception("ProcessTranslationComplete: Destination asset has been changed while awaiting translation.");
+					}
 				}
 			}
 
 			// Success, so save the data to the asset
 			asset.SaveContent(response.Fields.ToDictionary(f => f.Key, f => f.Value));
+
+			// Fix links
+			var sitePath = TMF.GetSitePath(asset).AssetPath.ToString();
+			var localeConfigCache = TMF.CreateLocaleConfigCache(sitePath).ToArray();
+			var sourceLanguageId = TMF.GetLocaleId(Asset.LoadDirect(sourceId), sitePath, localeConfigCache);
+			var destLanguageId = TMF.GetLocaleId(asset, sitePath, localeConfigCache);
+			TMF.FixRelativeLinks(asset, Asset.Load(sourceLanguageId), Asset.Load(destLanguageId), sitePath);
+
 			// Remove the checksum
 			TMF.Translation.DeleteHash(asset);
 		}
@@ -1348,12 +1414,15 @@ namespace LocalProject
 				throw new Exception("ProcessProjectTranslationComplete: Unable to load log asset");
 			}
 			var logContent = log.GetContent();
+			overwrite = log["overwrite"] == "true";
 
 			if (!destLocales.Any())
 			{
 				destLocales = new[] {logContent.First(f => f.Key.StartsWith("dest_locale")).Value.Replace("-", "_")};
 			}
 
+			string sitePath = null;
+			IEnumerable<LocaleId> localeConfigCache = null;
 			var failedList = new List<string>();
 			foreach (var source in sources)
 			{
@@ -1398,6 +1467,16 @@ namespace LocalProject
 						if (response.Fields.Any())
 						{
 							asset.SaveContent(response.Fields.ToDictionary(f => f.Key, f => f.Value));
+
+							// Fix links
+							if (sitePath == null)
+							{
+								sitePath = TMF.GetSitePath(asset).AssetPath.ToString();
+								localeConfigCache = TMF.CreateLocaleConfigCache(sitePath).ToArray();
+							}
+							var sourceLanguageId = TMF.GetLocaleId(Asset.LoadDirect(source), sitePath, localeConfigCache);
+							var destLanguageId = TMF.GetLocaleId(asset, sitePath, localeConfigCache);
+							TMF.FixRelativeLinks(asset, Asset.Load(sourceLanguageId), Asset.Load(destLanguageId), sitePath);
 						}
 						// Remove the checksum
 						TMF.Translation.DeleteHash(asset);
@@ -1407,7 +1486,23 @@ namespace LocalProject
 
 			if (failedList.Any())
 			{
-				throw new Exception(string.Join("\n\n", failedList));
+				if (log != null && log.IsLoaded && User.Load(log["user_name"]) != null)
+				{
+					//var failedSources = log.GetPanels("source_id").Select(s => Asset.Load(s["source_id"]).AssetPath.ToString());
+					//var failedDests = log.GetPanels("source_id").Select(s => string.Join(", ", s.GetPanels("dest_id").Select(d => Asset.Load(d["dest_id"]).AssetPath.ToString())));
+					var plural = failedList.Count > 1;
+					var body = string.Format("The translation has not been applied to the destination asset{0}, as {1} changed in the CMS before the translation was completed.\n\n", plural ? "s" : "", plural ? "they were" : "it was") +
+					           "To avoid this in future, check the 'Overwrite Existing Translation Asset' box to ensure the completed translation overwrites the destination asset in the CMS.\n\n" +
+					           string.Join("\n\n", failedList) + "\n\n" +
+					           //"Source assets: " + string.Join(", ", failedSources) + "\n" +
+					           //"Destination assets: " + string.Join(", ", failedDests) + "\n" +
+					           "XTM project id: " + log.Raw["project_id"];
+					Util.Email("XTM Translation - Translation not applied", body, User.Load(log["user_name"]).Email);
+				}
+				else
+				{
+					throw new Exception(string.Join("\n\n", failedList));
+				}
 			}
 
 			// Update the log
@@ -1573,6 +1668,26 @@ namespace LocalProject
 			public int RepeatWords { get; set; }
 			[DataMember(Name = "repeatsSegments")]
 			public int RepeatSegments { get; set; }
+		}
+
+		[DataContract]
+		public class AuthRequest
+		{
+			[DataMember(Name = "client")]
+			public string Client { get; set; }
+			[DataMember(Name = "userId")]
+			public int UserId { get; set; }
+			[DataMember(Name = "password")]
+			public string Password { get; set; }
+			[DataMember(Name = "integrationKey", EmitDefaultValue = false)]
+			public string IntegrationKey { get; set; }
+		}
+
+		[DataContract]
+		public class AuthResponse
+		{
+			[DataMember(Name = "token")]
+			public string Token { get; set; }
 		}
 
 		public string GetBoundary()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using CrownPeak.CMSAPI;
 using CrownPeak.CMSAPI.Services;
 
@@ -24,6 +25,8 @@ namespace LocalProject
 	 * 0.2.3   | 2021-07-30 | Include bug fixes with overwriting from OCD-19610
 	 * 0.2.4   | 2021-09-01 | Bug fix in LoadProjectPostInput
 	 * 0.2.5   | 2021-09-13 | Bug fixes from OCD-19344 and OCD-21658
+	 * 0.2.6   | 2021-10-04 | Add overwrite support for projects and fix it for individual files
+	 * 0.3.0   | 2021-10-07 | Updates to properly support overwrite after translation, relinking, and notification after failure to overwrite
 	 */
 	#region "LocaleId Class"
 
@@ -717,6 +720,79 @@ namespace LocalProject
 
 						var aItemDest = Asset.Load(szDestinationPath);
 						aCurrId.SaveContentField(kvpData.Key, "/cpt_internal/" + aItemDest.Id);
+					}
+				}
+			}
+			FixWysiwygLinks(contentDest, sourceLanguageContent, destLanguageContent, sitePath);
+		}
+
+		/// <summary>
+		///   Fixes relative links in derived content wysiwyg fields
+		/// </summary>
+		/// <param name="contentDest">The asset with the links to fix.</param>
+		/// <param name="sourceLanguageContent"></param>
+		/// <param name="destLanguageContent"></param>
+		/// <param name="sitePath"></param>
+		/// <example>
+		///   <code lang="C#"><![CDATA[
+		/// ServicesTMF.FixWysiwygLinks(contentDestinationAsset, sourceLanguageAsset, destLanguageAsset, sitePath);
+		/// ]]></code>
+		/// </example>
+		public static void FixWysiwygLinks(Asset contentDest, Asset sourceLanguageContent, Asset destLanguageContent, string sitePath)
+		{
+			string sourceRoot = Asset.Load(sourceLanguageContent["folder_root_path"]).AssetPath.ToString();
+			string destRoot = Asset.Load(destLanguageContent["folder_root_path"]).AssetPath.ToString();
+
+			foreach (KeyValuePair<string, string> kvpData in contentDest.GetContent())
+			{
+				// Is this non-empty, and does it contain a link
+				if (!string.IsNullOrWhiteSpace(kvpData.Value) && kvpData.Value.ToLowerInvariant().Contains("</a>"))
+				{
+					string content = kvpData.Value;
+					foreach (Match match in Regex.Matches(content, @"(<a.*?>.*?</a>)", RegexOptions.Singleline))
+					{
+						string szGroupValue = match.Groups[1].Value;
+
+						// TODO: what about single quotes or none at all?
+						Match matchAttr = Regex.Match(szGroupValue, @"href=\""(.*?)\""", RegexOptions.Singleline);
+						if (matchAttr.Success)
+						{
+							string szValue = matchAttr.Groups[1].Value;
+							if (!string.IsNullOrWhiteSpace(szValue))
+							{
+								if (szValue.Contains("/cpt_internal/"))
+								{
+									// This is an internal link we want to update if we can
+									Asset aAsset = Asset.Load(szValue);
+									if (!aAsset.IsLoaded) aAsset = Asset.LoadDirect(szValue);
+									if (aAsset.IsLoaded)
+									{
+										// Look for this asset in the distributed path
+										string assetPath = aAsset.AssetPath.ToString();
+										if (assetPath.StartsWith(sourceRoot, StringComparison.OrdinalIgnoreCase))
+										{
+											assetPath = destRoot + assetPath.Substring(sourceRoot.Length);
+											Asset aDistributedAsset = Asset.Load(assetPath);
+											if (!aDistributedAsset.IsLoaded) aDistributedAsset = Asset.LoadDirect(assetPath);
+											if (aDistributedAsset.IsLoaded)
+											{
+												// Turn this into an internal link like /CmsInstance/cpt_internal/id
+												string internalLink = string.Concat(
+													string.Join("/", aDistributedAsset.GetLink(LinkType.Internal).Split("/".ToCharArray()).Take(3).ToArray()),
+													"/",
+													aDistributedAsset.Id.ToString());
+												content = content.Replace(szValue, internalLink);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					// If there were any changes, save them now
+					if (!content.Equals(kvpData.Value))
+					{
+						contentDest.SaveContentField(kvpData.Key, content);
 					}
 				}
 			}
@@ -2119,8 +2195,10 @@ namespace LocalProject
 										bSendNotificationsToOwners = false; // No need to send notifications again below, so set flag here to prevent it
 									}
 
-									// Check if the 'Overwrite Existing Asset'/'Overwrite Existing Translation Asset' checkbox is selected.
-									if (string.Equals(peSelectedLangList.Raw["tmf_overwrite_existing_asset"], "y", StringComparison.OrdinalIgnoreCase))
+									// Check if the 'Overwrite Existing Asset'/'Overwrite Existing Translation Asset' checkbox is selected
+									// and we're not using automated translation.
+									if (string.Equals(peSelectedLangList.Raw["tmf_overwrite_existing_asset"], "y", StringComparison.OrdinalIgnoreCase)
+										&& !translator.IsTranslationRequired(asset, peSelectedLangList, nIndexPanel))
 									{
 										var tempSourcContent = asset.GetContent().ToDictionary(x => x.Key, x => x.Value);
 
@@ -2148,7 +2226,7 @@ namespace LocalProject
 										var values = translator.TmfInputValues(asset, peSelectedLangList, nIndexPanel);
 										if (values.Any())
 										{
-											translator.TranslateAsset(values, aContentSource, aDestTmpContent);
+											translator.TranslateAsset(values, aContentSource, aDestTmpContent, peSelectedLangList["tmf_overwrite_existing_asset"] == "y", context);
 										}
 									}
 
@@ -2221,7 +2299,7 @@ namespace LocalProject
 												var values = translator.TmfInputValues(asset, peSelectedLangList, nIndexPanel);
 												if (values.Any())
 												{
-													translator.TranslateAsset(values, aPackage, aDestTmpContent);
+													translator.TranslateAsset(values, aPackage, aDestTmpContent, false, context);
 												}
 											}
 										}
@@ -2333,6 +2411,7 @@ namespace LocalProject
 				var targetLanguages = selectedLanguages.Select(l => Asset.Load(l.Id).Raw["locale_code"]).ToArray();
 				var targets = new List<List<string>>();
 				var index = 1;
+				var overwrite = asset["overwrite_existing_asset"] == "y";
 				foreach (var sourceAsset in selectedAssets)
 				{
 					var targetList = new List<string>();
@@ -2391,7 +2470,7 @@ namespace LocalProject
 				//asset.SaveContent(fieldsToSave);
 
 				var translator = Translation.GetTmfTranslator(asset);
-				translator.TranslateProject(asset, selectedAssets.ToArray(), targetLanguages.ToArray(), targets.Select(t => t.ToArray()).ToArray());
+				translator.TranslateProject(asset, selectedAssets.ToArray(), targetLanguages.ToArray(), targets.Select(t => t.ToArray()).ToArray(), overwrite, context);
 
 				// Clear the content for the next run
 				asset.DeleteContentFields(asset.GetContent().Select(c => c.Key).ToList());
@@ -2484,16 +2563,17 @@ namespace LocalProject
 			ITMFTranslator Init(Asset config);
 			void ConfigInput(Asset asset, InputContext context);
 			void ConfigPostInput(Asset asset, PostInputContext context);
-			void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination);
-			void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets);
-			Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, object response);
-			Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, object response);
+			void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination, bool overwrite, Context context);
+			void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context);
+			Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, bool overwrite, Context context, object response);
+			Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context, object response);
 			void UpdateLog(Asset log);
 			void DisplayLog(Asset log);
 			void TmfInput(Asset asset, InputContext context, int index, bool isResend);
 			void ProjectInput(Asset asset, InputContext context);
 			void ProjectPostInput(Asset asset, PostInputContext context);
 			Dictionary<string, string> TmfInputValues(Asset asset, PanelEntry panel, int index);
+			bool IsTranslationRequired(Asset asset, PanelEntry panel, int index);
 		}
 
 		public class NullTranslator : ITMFTranslator
@@ -2509,18 +2589,18 @@ namespace LocalProject
 			public void ConfigPostInput(Asset asset, PostInputContext context)
 			{ }
 
-			public void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination)
+			public void TranslateAsset(Dictionary<string, string> inputValues, Asset source, Asset destination, bool overwrite, Context context)
 			{ }
 
-			public void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets)
+			public void TranslateProject(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context)
 			{ }
 
-			public Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, object response)
+			public Asset CreateLog(string type, Asset source, string sourceLocale, Asset destination, string destLocale, bool overwrite, Context context, object response)
 			{
 				return Asset.Load(-1);
 			}
 
-			public Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, object response)
+			public Asset CreateProjectLog(Asset project, Asset[] sources, string[] targetLocales, string[][] targets, bool overwrite, Context context, object response)
 			{
 				return Asset.Load(-1);
 			}
@@ -2543,6 +2623,11 @@ namespace LocalProject
 			public Dictionary<string, string> TmfInputValues(Asset asset, PanelEntry panel, int index)
 			{
 				return new Dictionary<string, string>();
+			}
+
+			public bool IsTranslationRequired(Asset asset, PanelEntry panel, int index)
+			{
+				return false;
 			}
 		}
 
