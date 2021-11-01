@@ -335,8 +335,10 @@ namespace XTM_Helper
 
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(xmlFile);
-			var fields = xmlDoc.SelectNodes("//field").Cast<XmlNode>().ToArray();
-			var fieldsToSave = fields.ToDictionary(f => GetNodeValue(f.SelectSingleNode("_key")), f => GetNodeValue(f.SelectSingleNode("value")));
+			var xnm = new XmlNamespaceManager(xmlDoc.NameTable);
+			xnm.AddNamespace("xtm", xmlDoc.DocumentElement.NamespaceURI);
+			var fields = xmlDoc.SelectNodes("//xtm:field", xnm).Cast<XmlNode>().ToArray();
+			var fieldsToSave = fields.ToDictionary(f => GetNodeValue(f.SelectSingleNode("xtm:_key", xnm)), f => GetNodeValue(f.SelectSingleNode("xtm:value", xnm)));
 			if (fieldsToSave.Any())
 			{
 				WorklistAsset asset;
@@ -706,11 +708,13 @@ namespace XTM_Helper
 					// Try again with the first field, which contains branchid and path
 					var xmlDoc = new XmlDocument();
 					xmlDoc.LoadXml(xml);
-					var firstField = xmlDoc.SelectSingleNode("//field");
+					var xnm = new XmlNamespaceManager(xmlDoc.NameTable);
+					xnm.AddNamespace("xtm", xmlDoc.DocumentElement.NamespaceURI);
+					var firstField = xmlDoc.SelectSingleNode("//xtm:field", xnm);
 					if (firstField != null)
 					{
-						var key = System.Net.WebUtility.HtmlDecode(GetNodeValue(firstField.SelectSingleNode("_key")));
-						var value = GetNodeValue(firstField.SelectSingleNode("value"));
+						var key = System.Net.WebUtility.HtmlDecode(GetNodeValue(firstField.SelectSingleNode("xtm:_key", xnm)));
+						var value = GetNodeValue(firstField.SelectSingleNode("xtm:value", xnm));
 						if (value == "" && key.IndexOf("/") > 0)
 						{
 							var branchId = int.Parse(key.Substring(0, key.IndexOf("/")));
@@ -741,8 +745,10 @@ namespace XTM_Helper
 				{
 					var xmlDoc = new XmlDocument();
 					xmlDoc.LoadXml(xml);
-					var fields = xmlDoc.SelectNodes("//field").Cast<XmlNode>().ToArray();
-					var fieldsToSave = fields.Where(f => !string.IsNullOrEmpty(GetNodeValue(f.SelectSingleNode("value")))).ToDictionary(f => GetNodeValue(f.SelectSingleNode("_key")), f => GetNodeValue(f.SelectSingleNode("value")));
+					var xnm = new XmlNamespaceManager(xmlDoc.NameTable);
+					xnm.AddNamespace("xtm", xmlDoc.DocumentElement.NamespaceURI);
+					var fields = xmlDoc.SelectNodes("//xtm:field", xnm).Cast<XmlNode>().ToArray();
+					var fieldsToSave = fields.Where(f => !string.IsNullOrEmpty(GetNodeValue(f.SelectSingleNode("xtm:value", xnm)))).ToDictionary(f => GetNodeValue(f.SelectSingleNode("xtm:_key", xnm)), f => GetNodeValue(f.SelectSingleNode("xtm:value", xnm)));
 					if (fieldsToSave.Any())
 					{
 						ShowStatus("Updating " + target.FullPath + " ...");
