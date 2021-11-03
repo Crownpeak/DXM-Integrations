@@ -27,6 +27,7 @@ namespace LocalProject
 	 * 0.2.5   | 2021-09-13 | Bug fixes from OCD-19344 and OCD-21658
 	 * 0.2.6   | 2021-10-04 | Add overwrite support for projects and fix it for individual files
 	 * 0.3.0   | 2021-10-07 | Updates to properly support overwrite after translation, relinking, and notification after failure to overwrite
+	 * 0.3.1   | 2021-11-03 | Bug fix in GetLocaleId to avoid false positive with path containing subpath
 	 */
 	#region "LocaleId Class"
 
@@ -160,7 +161,7 @@ namespace LocalProject
 				if (!string.IsNullOrWhiteSpace(entry.Raw["folder_root"]))
 				{
 					//If the "folder_root" of the entry exists within the asset's path, return that entry
-					if (assetPath.Contains(entry["folder_root"].ToUpper() +
+					if (assetPath.StartsWith(entry["folder_root"].ToUpper() +
 																 (Equals(entry["folder_root"].Last(), "/") ? "" : "/")))
 					{
 						returnID = entry.Id.ToString();
@@ -197,7 +198,7 @@ namespace LocalProject
 
 			foreach (var entry in localeConfigCache)
 			{
-				if (assetPath.Contains(entry.FolderRoot) && !string.IsNullOrWhiteSpace(entry.FolderRoot))
+				if (assetPath.StartsWith(entry.FolderRoot) && !string.IsNullOrWhiteSpace(entry.FolderRoot))
 				{
 					return entry.Id;
 				}
