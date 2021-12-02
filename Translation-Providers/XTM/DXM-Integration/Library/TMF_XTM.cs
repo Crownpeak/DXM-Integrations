@@ -24,6 +24,9 @@ namespace LocalProject
 	 * 0.2.5   | 2021-09-28 | Fix bug with attached files from projects in Visual Mode
 	 * 0.2.6   | 2021-10-04 | Add overwrite support for projects and fix it for individual files
 	 * 0.3.0   | 2021-10-07 | Updates to properly support overwrite after translation, relinking, and notification after failure to overwrite
+	 * 0.4.0   | 2021-11-22 | Add preview for Translation Config asset
+	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
+	 * 0.5.1   | 2021-12-02 | Stop duplicate completion notice from XTM from causing an email about changes before completion
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -104,8 +107,8 @@ namespace LocalProject
 			Input.ShowTextBox("Retry Count for Translation Status", XTM_RETRY_COUNT, helpMessage: "How many times to retry before giving up? Zero means keep retrying.");
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
-			Input.ShowMessage("TMF Translations v0.3.0 (2021-10-07)");
-			Input.ShowMessage("TMF XTM Integration v0.3.0 (2021-10-07)");
+			Input.ShowMessage("TMF Translations v0.5.0 (2021-12-01)");
+			Input.ShowMessage("TMF XTM Integration v0.5.1 (2021-12-02)");
 			Input.EndControlPanel();
 		}
 
@@ -1329,6 +1332,11 @@ namespace LocalProject
 			var log = FindLogByProjectId(asset, xtmProjectId);
 			if (log != null && log.IsLoaded)
 			{
+				if (log.Raw["completed"] == "true")
+				{
+					Util.Log(asset, "Running duplicate ProcessTranslationComplete for project " + xtmProjectId);
+					return;
+				}
 				UpdateLog(log, new XtmProjectStatusResponse
 				{
 					FinishDate = 1
@@ -1546,6 +1554,119 @@ namespace LocalProject
 			customerId = _config.Raw[XTM_CUSTOMER_ID];
 		}
 
+		public string ConfigPreview(Asset asset)
+		{
+			var config = new XtmConfiguration(_config);
+			var result = new StringBuilder(10240);
+			
+			result.AppendFormat("<p>XTM endpoint: {0}<br/>", config.EndPoint);
+			result.AppendFormat("XTM customer id: {0}<br/>", config.CustomerId);
+			result.AppendFormat("XTM visual mode configured: {0}<br/>", !string.IsNullOrWhiteSpace(config.VisualModeHeader) && !string.IsNullOrWhiteSpace(config.VisualModeHeader) ? "Yes" : "No");
+			result.AppendFormat("Webhook: {0} (<a href=\"{0}?test=true\" target=\"_blank\">Test webhook</a>)</p>", config.CallbackUrl);
+
+			if (!string.IsNullOrWhiteSpace(config.EndPoint) && !string.IsNullOrWhiteSpace(config.CustomerId))
+			{
+				var parms = new GetHttpParams
+				{
+					TimeOut = 60
+				};
+				parms.AddHeader("Authorization: XTM-Basic " + config.AccessToken);
+
+				var response = Util.GetHttp(config.EndPoint + "/projects?activity=ACTIVE&customerId=" + config.CustomerId,
+					parms);
+				if (response.StatusCode < 200 || response.StatusCode > 299)
+				{
+					throw new Exception("GetPreview: Response code " + response.StatusCode + " received from XTM.");
+				}
+
+				var xtmResponse =
+					Util.DeserializeDataContractJson(response.ResponseText, typeof(ShortProject[])) as ShortProject[];
+				if (xtmResponse == null)
+				{
+					throw new Exception("GetPreview: Failed to parse JSON from XTM response.");
+				}
+
+				var projectCollection = new ShortProjectCollection
+				{
+					Projects = xtmResponse,
+					Page = int.Parse(response.Headers["xtm-page"]),
+					PageSize = int.Parse(response.Headers["xtm-page-size"]),
+					TotalCount = int.Parse(response.Headers["xtm-total-items-count"])
+				};
+
+				var fp = new FilterParams();
+				fp.Add(AssetPropertyNames.TemplateLabel, Comparison.Equals, "TMF Translation Log");
+				fp.Add("translation_provider", Comparison.Equals, "xtm");
+				fp.Add("project_id", Comparison.IsInSet, projectCollection.Projects.Select(p => p.Id).ToList());
+				var logs = Asset.Load(TMF.GetSitePath(_config).AssetPath + "/Translation Logs").GetFilterList(fp);
+
+				if (projectCollection.TotalCount == 0)
+				{
+					result.Append("<p>There are no active projects</p>");
+				}
+				else
+				{
+					var sitePath = TMF.GetSitePath(asset).AssetPath.ToString();
+					var localeCache = TMF.CreateLocaleConfigCache(sitePath).ToArray();
+					result.Append("<style type=\"text/css\">\nbody { font-family: Arial; }\n#mytable { border: none; font-size: smaller; font-family: Arial; }\n#mytable tr:nth-child(odd) { background-color: #f2f2f2; }\n#mytable td, #mytable th { padding: 4px 6px; }\n#mytable tr:hover td { background-color: #eeeeff; }\n</style>");
+					result.Append("<table cellspacing=0 cellpadding=0 id=\"mytable\"><tr><th>Project Id</th><th>Name</th><th>Status</th><th>Created</th><th>Asset(s)</th><th>From</th><th>To</th></tr>");
+					foreach (var project in projectCollection.Projects)
+					{
+						result.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td>", project.Id, project.Name, project.Status);
+						var log = logs.FirstOrDefault(l => l.Raw["project_id"] == project.Id.ToString());
+						if (log != null)
+						{
+							result.AppendFormat("<td>{0:yyyy-MM-dd HH:mm}Z</td>", log.CreateDate.Value.ToUniversalTime());
+							var logContent = log.GetContent();
+							result.Append("<td>");
+							var sources = log.GetPanels("source_id").Select(p => p.Raw["source_id"]).ToArray();
+							if (sources.Length > 1)
+							{
+								result.AppendFormat("<details><summary>{0} assets</summary>", sources.Length);
+							}
+
+							var first = true;
+							foreach (var source in sources)
+							{
+								if (!first) result.Append("<br/>");
+								else first = false;
+								var sourceAsset = Asset.LoadDirect(source);
+								var localeId = TMF.GetLocaleId(sourceAsset, sitePath, localeCache);
+								var locale = Asset.Load(localeId);
+								var root = locale.Raw["folder_root"];
+								result.Append(sourceAsset.AssetPath.ToString().Substring(root.Length));
+							}
+
+							if (sources.Length > 1)
+							{
+								result.Append("</details>");
+							}
+
+							result.Append("</td>");
+							if (logContent.ContainsKey("dest_locale"))
+							{
+								result.AppendFormat("<td>{0}</td><td>{1}</td>", log.Raw["source_locale"], log.Raw["dest_locale"]);
+							}
+							else
+							{
+								var locales = logContent.Where(f => f.Key.StartsWith("dest_locale:")).GroupBy(f => f.Value).Select(g => g.Key);
+								result.AppendFormat("<td>{0}</td><td>{1}</td>", log.Raw["source_locale"], string.Join(", ", locales));
+							}
+						}
+						else
+						{
+							result.Append("<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>");
+						}
+
+						result.Append("</tr>");
+					}
+
+					result.Append("</table>");
+				}
+			}
+			return result.ToString();
+		}
+
 		#region Classes for XTM serialization
 		[DataContract]
 		private class XtmTranslationData
@@ -1565,7 +1686,37 @@ namespace LocalProject
 
 			public static XtmTranslationData Deserialize(string xml)
 			{
-				return Util.DeserializeDataContractXml(xml, typeof(XtmTranslationData)) as XtmTranslationData;;
+				//return Util.DeserializeDataContractXml(xml, typeof(XtmTranslationData)) as XtmTranslationData;
+
+				// Work around issue when deserializing items with values over 8192 characters
+				// There was an error deserializing the object of type LocalProject.XtmTranslator + XtmTranslationData.
+				// The maximum string content length quota(8192) has been exceeded while reading XML data. This quota may be increased by changing the MaxStringContentLength property on the XmlDictionaryReaderQuotas object used when creating the XML reader.Line 1, position 551.
+				var truncations = new Dictionary<string, string>();
+				var regex = new Regex("<_key>(.+?)</_key><value>(.*?)</value>");
+				foreach (Match match in regex.Matches(xml))
+				{
+					var key = match.Groups[1].Value;
+					var value = match.Groups[2].Value;
+					if (value.Length > 8190)
+					{
+						truncations.Add(key, value);
+						xml = xml.Replace(match.Value, "<_key>" + key + "</_key><value>truncated</value>");
+					}
+				}
+
+				var data = Util.DeserializeDataContractXml(xml, typeof(XtmTranslationData)) as XtmTranslationData;
+				foreach (var t in truncations)
+				{
+					foreach (var field in data.Fields)
+					{
+						if (field.Key == t.Key)
+						{
+							field.Value = t.Value;
+							break;
+						}
+					}
+				}
+				return data;
 			}
 		}
 
@@ -1688,6 +1839,36 @@ namespace LocalProject
 		{
 			[DataMember(Name = "token")]
 			public string Token { get; set; }
+		}
+
+		public class ShortProjectCollection
+		{
+			public ShortProject[] Projects { get; set; }
+			public ShortProject this[int i]
+			{
+				get { return Projects[i]; }
+				set { Projects[i] = value; }
+			}
+			public int Page { get; set; }
+			public int PageSize { get; set; }
+			public int TotalCount { get; set; }
+			public int Length
+			{
+				get { return Projects.Length; }
+			}
+		}
+
+		[DataContract]
+		public class ShortProject
+		{
+			[DataMember(Name = "id")]
+			public int Id { get; set; }
+			[DataMember(Name = "name")]
+			public string Name { get; set; }
+			[DataMember(Name = "status")]
+			public string Status { get; set; }
+			[DataMember(Name = "activity")]
+			public string Activity { get; set; }
 		}
 
 		public string GetBoundary()

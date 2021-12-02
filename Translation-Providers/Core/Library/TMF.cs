@@ -28,6 +28,8 @@ namespace LocalProject
 	 * 0.2.6   | 2021-10-04 | Add overwrite support for projects and fix it for individual files
 	 * 0.3.0   | 2021-10-07 | Updates to properly support overwrite after translation, relinking, and notification after failure to overwrite
 	 * 0.3.1   | 2021-11-03 | Bug fix in GetLocaleId to avoid false positive with path containing subpath
+	 * 0.4.0   | 2021-11-19 | Add preview for Translation Config asset
+	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
 	 */
 	#region "LocaleId Class"
 
@@ -2575,6 +2577,7 @@ namespace LocalProject
 			void ProjectPostInput(Asset asset, PostInputContext context);
 			Dictionary<string, string> TmfInputValues(Asset asset, PanelEntry panel, int index);
 			bool IsTranslationRequired(Asset asset, PanelEntry panel, int index);
+			string ConfigPreview(Asset asset);
 		}
 
 		public class NullTranslator : ITMFTranslator
@@ -2630,6 +2633,11 @@ namespace LocalProject
 			{
 				return false;
 			}
+
+			public string ConfigPreview(Asset asset)
+			{
+				return string.Empty;
+			}
 		}
 
 		public static class TemplateTranslation
@@ -2640,7 +2648,7 @@ namespace LocalProject
 				var fp = new FilterParams
 				{
 					Limit = 1,
-					FieldNames = new List<string> { "fields", "field", "opt_in" }
+					FieldNames = new List<string> { "fields", "field", "opt_in", "version", "fields2", "field_key", "field_include", "field2", "everything_else" }
 				};
 				fp.Add(AssetPropertyNames.TemplateLabel, Comparison.Equals, "Template Translation Config");
 				fp.Add("template", Comparison.EndsWith, "/" + asset.TemplateId);
@@ -2662,22 +2670,64 @@ namespace LocalProject
 					.ToDictionary(c => c.Key, c => c.Value);
 				if (templateConfig.IsLoaded)
 				{
-					var fields = templateConfig.GetPanels("fields").Select(p => p.Raw["field"]).ToArray();
-					if (templateConfig.Raw["opt_in"] == "yes")
+					if (templateConfig.Raw["version"] != "2")
 					{
-						// Allow list just the fields they want
-						return content.Where(c => fields.Contains(c.Key) || fields.Any(f => c.Key.StartsWith(f + ":")))
-							.ToDictionary(c => c.Key, c => c.Value);
+						// Version 1
+						var fields = templateConfig.GetPanels("fields").Select(p => p.Raw["field"]).ToArray();
+						if (templateConfig.Raw["opt_in"] == "yes")
+						{
+							// Allow list just the fields they want
+							return content.Where(c => fields.Contains(c.Key) || fields.Any(f => c.Key.StartsWith(f + ":")))
+								.ToDictionary(c => c.Key, c => c.Value);
+						}
+						else
+						{
+							// Deny list removing the fields they don't want
+							return content.Where(c => !fields.Contains(c.Key) && !fields.Any(f => c.Key.StartsWith(f + ":")))
+								.ToDictionary(c => c.Key, c => c.Value);
+						}
 					}
 					else
 					{
-						// Deny list removing the fields they don't want
-						return content.Where(c => !fields.Contains(c.Key) && !fields.Any(f => c.Key.StartsWith(f + ":")))
+						// Version 2
+						var result = new Dictionary<string, string>();
+						content = content.Where(c => !string.IsNullOrWhiteSpace(c.Value))
+							.Where(c => !(c.Key.StartsWith("upload#") || c.Key.StartsWith("upload_name#") || c.Key.StartsWith("ommsnippetid#") || c.Key.StartsWith("ommvariantid#") || c.Key.StartsWith("ommvarianttype#")))
 							.ToDictionary(c => c.Key, c => c.Value);
+						foreach (var kvp in content)
+						{
+							var processed = false;
+							foreach (var panel in templateConfig.GetPanels("fields2"))
+							{
+								var source = panel.Raw["field_key"] == "key" ? kvp.Key : kvp.Value;
+								var include = panel.Raw["field_include"] == "include";
+								var field = panel.Raw["field2"].Trim();
+								var isRegex = IsRegex(field);
+								if ((isRegex && new Regex(field).IsMatch(source))
+									|| (!isRegex && source.ToLowerInvariant().IndexOf(field) >= 0))
+								{
+									if (include) result.Add(kvp.Key, kvp.Value);
+									processed = true;
+									break;
+								}
+							}
+							if (!processed && templateConfig.Raw["everything_else"] == "include")
+							{
+								result.Add(kvp.Key, kvp.Value);
+							}
+						}
+						return result;
 					}
 				}
 
 				return content;
+			}
+
+			private static bool IsRegex(string source)
+			{
+				if (string.IsNullOrWhiteSpace(source)) return false;
+				if (source.IndexOfAny("^$*?[]".ToCharArray()) >= 0) return true;
+				return false;
 			}
 		}
 
