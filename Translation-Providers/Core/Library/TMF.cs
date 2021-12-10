@@ -30,6 +30,7 @@ namespace LocalProject
 	 * 0.3.1   | 2021-11-03 | Bug fix in GetLocaleId to avoid false positive with path containing subpath
 	 * 0.4.0   | 2021-11-19 | Add preview for Translation Config asset
 	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
+	 * 0.5.1   | 2021-12-10 | Exclude "translation_hash" from change calculation
 	 */
 	#region "LocaleId Class"
 
@@ -2664,6 +2665,7 @@ namespace LocalProject
 				var content = asset.GetContent();
 				// Remove TMF fields
 				content = content.Where(c => !c.Key.StartsWith("tmf_")
+																		 && !c.Key.Equals("translation_hash")
 																		 && !c.Key.StartsWith("upload#tmf_")
 																		 && !c.Key.StartsWith("upload_name#tmf_")
 																		 && !string.IsNullOrWhiteSpace(c.Value))
@@ -2722,6 +2724,14 @@ namespace LocalProject
 
 				return content;
 			}
+      
+ 			public static Dictionary<string, string> GetFieldsSkippedForTranslation(Asset asset)
+ 			{
+				var content = asset.GetContent();
+				var included = GetFieldsForTranslation(asset);
+        
+        		return content.Except(included).ToDictionary(x => x.Key, x => x.Value);
+ 			}
 
 			private static bool IsRegex(string source)
 			{

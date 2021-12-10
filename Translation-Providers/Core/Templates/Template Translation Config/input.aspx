@@ -23,7 +23,7 @@
 
 	Input.NextDropDownContainer();
 	// Version 2
-	Input.ShowMessage("Fields with names beginning 'ommsnippetid#', 'ommvariantid#', 'ommvarianttype#', 'upload#' and 'upload_name#' are automatically excluded.");
+	Input.ShowMessage("Fields with names beginning 'ommsnippetid#', 'ommvariantid#', 'ommvarianttype#', 'upload#' and 'upload_name#' are automatically excluded, as is the 'translation_hash' field.");
 	while (Input.NextPanel("fields2", displayName:"Fields"))
 	{
 		Input.StartHorizontalWrapContainer();

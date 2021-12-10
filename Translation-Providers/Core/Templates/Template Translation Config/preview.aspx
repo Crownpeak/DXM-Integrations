@@ -31,7 +31,8 @@
 	}
 	else
 	{
-		Out.WriteLine("<p>Showing fields for {0}.<p/>", previewAsset.AssetPath);
+		Out.WriteLine("<h3>Preview for {0}</h3>", previewAsset.AssetPath);
+		Out.WriteLine("<p>Showing fields that will be sent for translation for {0}.<p/>", previewAsset.AssetPath);
 		var fields = TMF.TemplateTranslation.GetFieldsForTranslation(previewAsset);
 		if (!fields.Any())
 		{
@@ -43,6 +44,17 @@
 			var value = Util.HtmlEncode(field.Value);
 			if (value.Length > 100) value = "<details><summary>" + value.Substring(0, 100) + "... (" + value.Length + " characters)</summary>" + value + "</details>";
 			Out.WriteLine("<tr><td>" + Util.HtmlEncode(field.Key) + "</td><td>" + value + "</td></tr>");
+		}
+		Out.WriteLine("</table>");
+    
+		var fieldsSkipped = TMF.TemplateTranslation.GetFieldsSkippedForTranslation(previewAsset);
+		Out.WriteLine("<br/><p>Showing fields that will <strong>NOT</strong> be sent for translation for {0}.<p/>", previewAsset.AssetPath);
+		Out.WriteLine("<table border=1 cellspacing=0 cellpadding=2><tr><th>Name</th><th>Value</th></tr>");
+		foreach (var skippedField in fieldsSkipped.OrderBy(f => f.Key))
+		{
+			var value = Util.HtmlEncode(skippedField.Value);
+			if (value.Length > 100) value = "<details><summary>" + value.Substring(0, 100) + "... (" + value.Length + " characters)</summary>" + value + "</details>";
+			Out.WriteLine("<tr><td>" + Util.HtmlEncode(skippedField.Key) + "</td><td>" + value + "</td></tr>");
 		}
 		Out.WriteLine("</table>");
 	}

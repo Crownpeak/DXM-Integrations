@@ -27,6 +27,7 @@ namespace LocalProject
 	 * 0.4.0   | 2021-11-22 | Add preview for Translation Config asset
 	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
 	 * 0.5.1   | 2021-12-02 | Stop duplicate completion notice from XTM from causing an email about changes before completion
+	 * 0.5.2   | 2021-12-10 | Correctly decode values when 8192-character limit is exceeded
 	 */
 	public class XtmTranslator : TMF.ITMFTranslator
 	{
@@ -107,8 +108,8 @@ namespace LocalProject
 			Input.ShowTextBox("Retry Count for Translation Status", XTM_RETRY_COUNT, helpMessage: "How many times to retry before giving up? Zero means keep retrying.");
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
-			Input.ShowMessage("TMF Translations v0.5.0 (2021-12-01)");
-			Input.ShowMessage("TMF XTM Integration v0.5.1 (2021-12-02)");
+			Input.ShowMessage("TMF Translations v0.5.1 (2021-12-10)");
+			Input.ShowMessage("TMF XTM Integration v0.5.2 (2021-12-10)");
 			Input.EndControlPanel();
 		}
 
@@ -1699,7 +1700,7 @@ namespace LocalProject
 					var value = match.Groups[2].Value;
 					if (value.Length > 8190)
 					{
-						truncations.Add(key, value);
+						truncations.Add(key, System.Net.WebUtility.HtmlDecode(value));
 						xml = xml.Replace(match.Value, "<_key>" + key + "</_key><value>truncated</value>");
 					}
 				}
