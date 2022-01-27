@@ -1,34 +1,84 @@
-(function(window, $, undefined) {
+(function (window, $, undefined) {
 
-	var b = document.getElementById("bynder-compactview");
-	if (!b) {
-		b = document.createElement("div");
-		b.id = "bynder-compactview";
-		b.setAttribute("data-assetTypes", "image");
-		b.setAttribute("data-autoload", "false");
-		b.setAttribute("data-button", "Open Compact View");
-		b.setAttribute("data-collections", "true");
-		b.setAttribute("data-defaultEnvironment", "");
-		b.setAttribute("data-fullScreen", "false");
-		b.setAttribute("data-header", "true");
-		b.setAttribute("data-language", "en_US");
-		b.setAttribute("data-mode", "single");
-		b.setAttribute("data-zindex", "300");
-		b.setAttribute("data-shadowDom", "false");
-		b.style.height = "1px";
-		b.style.width = "1px";
-		document.body.appendChild(b);
+        var bynderOptions = {
+		language: "en_US",
+		assetTypes: ["image"],
+		theme: {
+			colorButtonPrimary: "#3380FF"
+		},
+		mode: "SingleSelectFile",
+		onSuccess: function (assets, additionalInfo) {
+			var url = (additionalInfo && additionalInfo.selectedFile)
+				? additionalInfo.selectedFile.url
+				: "";
+			for (var i = 0; i < assets.length; i++) {
+				var asset = assets[i];
+				switch (asset.type) {
+					case 'IMAGE':
+						if (!url) url = asset.files['webimage'];
+						var component = $(bynderImage).closest(".cp-dnd-component-wrapper");
+						var spans = component.find("cpinline");
+						spans.eq(0).text(url).blur();
+						var field = spans.eq(0).attr("data-cp-field-name");
+						top.onCpNotify('dropImage|' + cpCmsId + '|' + field + '|' + url);
+						bynderImage.src = url;
 
+						var alt = asset.name;
+						spans.eq(1).text(alt);
+						field = spans.eq(1).attr("data-cp-field-name");
+						top.onCpNotify('dropImage|' + cpCmsId + '|' + field + '|' + alt);
+						bynderImage.alt = alt;
+						break;
+				}
+			}
+		}
+	};
+
+	if (!window.BynderContactView) {
 		var s = document.createElement("script");
 		s.type = "text/javascript";
-		s.src = "https://d8ejoa1fys2rk.cloudfront.net/modules/compactview/includes/js/client-1.5.0.min.js";
+		s.src = "https://d8ejoa1fys2rk.cloudfront.net/5.0.5/modules/compactview/bynder-compactview-2-latest.js";
 		document.body.appendChild(s);
 	}
 
-	var bynderImage = null;
+	function getInlineEnabled() {
+		var inlineButton = window && window.top && window.top.document && window.top.document.getElementById("contentModuleInline");
+		window.cpInlineEnabled = inlineButton && inlineButton.className.indexOf("view-active") >= 0;
+	}
+	getInlineEnabled();
+	window.setInterval(getInlineEnabled, 1000);
 
+	var bynderImage = null;
 	findBynderImages();
 	window.setInterval(findBynderImages, 1000);
+
+	$("body").on("click", "img[data-cp-integration='bynder processed']", function (event) {
+		if (cpInlineEnabled) {
+			bynderImage = event.target || event.srcElement;
+			event.preventDefault();
+			event.cancelBubble = true;
+			event.stopPropagation();
+			BynderCompactView.open(bynderOptions);
+		}
+		return false;
+	});
+
+	setInterval(function() {
+		if (!cpInlineEnabled) return;
+		var images = $("img[data-cp-integration='bynder processed']");
+		images.each(function(index) {
+			var $this = $(this);
+			var src = $this.attr("src");
+			var alt = $this.attr("alt");
+			var spans = $(this).closest(".cp-dnd-component-wrapper, .cp-dnd-saved-component-wrapper").find("cpinline");
+			var url = spans.eq(0).text();
+			if (url && src != url && url.indexOf("http") === 0) {
+				$this.attr("src", url).attr("alt", spans.eq(1).text()).css("visibility", "visible");
+			} else if (src != url && src !== "../../../../../v3/assets/images/UI-DragAndDrop/src-placeholder.png") {
+				$this.attr("src", "../../../../../v3/assets/images/UI-DragAndDrop/src-placeholder.png").css("visibility", "visible");
+			}
+		});
+	}, 500);
 
 	function findBynderImages() {
 		var img = cp$('img[data-cp-integration="bynder"]');
@@ -37,52 +87,15 @@
 			img.css("cursor", cpInlineEnabled ? "pointer" : "default");
 
 			img.each(function (index) {
-				var spans = $(this).closest("ng-component").find("span");
-				var url = spans.eq(1).text();
+				var spans = $(this).closest(".cp-dnd-component-wrapper, .cp-dnd-saved-component-wrapper").find("cpinline");
+				var url = spans.eq(0).text();
 				if (url && url.indexOf("http") === 0) {
-					$(this).attr("src", url).attr("alt", spans.eq(3).text()).css("visibility", "visible");
+					$(this).attr("src", url).attr("alt", spans.eq(1).text()).css("visibility", "visible");
 				} else if (cpInlineEnabled) {
-					$(this).attr("src", "../V3/images/src-placeholder.png").css("visibility", "visible");
+					$(this).attr("src", "../../../../../v3/assets/images/UI-DragAndDrop/src-placeholder.png").css("visibility", "visible");
 				}
-			});
-
-			img.click(function (event) {
-				if (cpInlineEnabled) {
-					bynderImage = event.srcElement;
-					event.preventDefault();
-					event.cancelBubble = true;
-					event.stopPropagation();
-					$("#bynder-compactview > button").click();
-				}
-				return false;
 			});
 		}
 	}
-
-	document.addEventListener('BynderAddMedia', function (e) {
-		var selectedAssets = e.detail;
-
-		var asset;
-		for (var i = 0; i < selectedAssets.length; i++) {
-			asset = selectedAssets[i];
-			switch (asset.type) {
-				case 'image':
-
-					var component = $(bynderImage).closest("ng-component");
-					var debugs = component.find("span.cpDebugText");
-					var spans = component.find("span[contenteditable]");
-					spans.eq(0).text(asset.thumbnails['webimage']).blur();
-					var field = debugs.eq(0).text().split(" ")[0];
-					cpNotify('dropImage|' + cpCmsId + '|' + field + '|' + asset.thumbnails['webimage']);
-					bynderImage.src = asset.thumbnails['webimage'];
-
-					spans.eq(1).text(asset.name);
-					field = debugs.eq(1).text().split(" ")[0];
-					cpNotify('dropImage|' + cpCmsId + '|' + field + '|' + asset.name);
-					bynderImage.alt = asset.name;
-					break;
-			}
-		}
-	});
 
 }(window, cp$));
