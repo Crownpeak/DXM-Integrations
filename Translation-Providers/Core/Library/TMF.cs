@@ -31,6 +31,7 @@ namespace LocalProject
 	 * 0.4.0   | 2021-11-19 | Add preview for Translation Config asset
 	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
 	 * 0.5.1   | 2021-12-10 | Exclude "translation_hash" from change calculation
+	 * 0.5.2   | 2022-11-03 | Include fix from OCD-26101 for overridden list panels not being deleted
 	 */
 	#region "LocaleId Class"
 
@@ -2212,6 +2213,9 @@ namespace LocalProject
 										// Save adjusted content from source asset to destination asset
 										aDestTmpContent.SaveContent(adjustedContent);
 
+										// Delete unmatched records from Translated Asset
+										DeleteUnmatchedTranslatedFields(aContentSource.Id, aDestTmpContent.Id);
+
 										// Re-load destination asset
 										aDestTmpContent = Asset.Load(aConfigContent["destination_id"]);
 
@@ -2478,6 +2482,16 @@ namespace LocalProject
 
 				// Clear the content for the next run
 				asset.DeleteContentFields(asset.GetContent().Select(c => c.Key).ToList());
+			}
+
+			/// <summary>
+			/// Use this method to delete the unmatched Translated fields from translated asset.
+			/// </summary>
+			/// <param name="parentAssetId"></param>
+			/// <param name="translatedAssetId"></param>
+			private static void DeleteUnmatchedTranslatedFields(int? parentAssetId, int? translatedAssetId)
+			{
+				Asset.DeleteUnmatchedTranslatedFields(parentAssetId, translatedAssetId);
 			}
 		}
 
