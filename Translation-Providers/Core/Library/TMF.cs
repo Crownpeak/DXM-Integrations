@@ -32,6 +32,8 @@ namespace LocalProject
 	 * 0.5.0   | 2021-12-01 | Version 2 of Template Translation Config, and fix 8192-character limit on returning translations
 	 * 0.5.1   | 2021-12-10 | Exclude "translation_hash" from change calculation
 	 * 0.5.2   | 2022-11-03 | Include fix from OCD-26101 for overridden list panels not being deleted
+	 * 0.5.3   | 2023-02-28 | Update upload_name field when fixing relative links
+	 * 0.6.0   | 2023-07-17 | Include update from OCD-28596 to improve saving performance
 	 */
 	#region "LocaleId Class"
 
@@ -58,6 +60,7 @@ namespace LocalProject
 		public static string _TMFConfig = "_TMF";
 		public static string Locales_Config = "/Locales Config/";
 		public static string Relationships_Config = "/Relationships Config/";
+		public static string PostInputWasRunKey = "_tmf_post_input_run";
 
 		// Used by ServicesTMF.RemoveTmfDuplicates() for identifying "upload#" prefixes.
 		private const string UploadPrefix = "upload#";
@@ -724,7 +727,10 @@ namespace LocalProject
 						aCurrId.DeleteContentField(kvpData.Key);
 
 						var aItemDest = Asset.Load(szDestinationPath);
-						aCurrId.SaveContentField(kvpData.Key, "/cpt_internal/" + aItemDest.Id);
+						var fields = new Dictionary<string, string>();
+						fields.Add(kvpData.Key, "/cpt_internal/" + aItemDest.Id);
+						fields.Add(kvpData.Key.Replace("upload#", "upload_name#"), aItemDest.AssetPath.ToString());
+						aCurrId.SaveContent(fields);
 					}
 				}
 			}
@@ -1319,7 +1325,26 @@ namespace LocalProject
 			/// </example>
 			public static void LoadPostInput(Asset asset, PostInputContext postInputContext)
 			{
-				//reserved for future.
+				var keys = new List<string>();
+
+				// Build a list of keys (we have to do this to avoid "Collection was modified" errors
+				foreach (KeyValuePair<string, string> kvp in postInputContext.InputForm)
+				{
+					if (kvp.Key.Contains("tmf_") &&
+					    !string.Equals(kvp.Key, "tmf_folder_link_internal", StringComparison.OrdinalIgnoreCase))
+					{
+						keys.Add(kvp.Key);
+					}
+				}
+
+				// Move TMF helper fields from InputForm to UserVariables
+				foreach (string key in keys)
+				{
+					postInputContext.UserVariables[key] = postInputContext.InputForm[key];
+					postInputContext.InputForm.Remove(key);
+				}
+
+				postInputContext.UserVariables[PostInputWasRunKey] = "1";
 			}
 			
 			public static void LoadProjectPostInput(Asset asset, PostInputContext context)
@@ -2130,6 +2155,8 @@ namespace LocalProject
 
 		public class PostSave : TMF
 		{
+			private const string LoadPostInputNotRunErrorMessage = "TMF LoadPostInput method was not called. It is recommended to create a post_input.aspx plugin and call ServicesTMF.PostInput.LoadPostInput(asset, context).";
+
 			/// <summary>
 			///   Should be included in post_save template file to enable TMF
 			/// </summary>
@@ -2142,6 +2169,12 @@ namespace LocalProject
 			/// </example>
 			public static void LoadPostSave(Asset asset, PostSaveContext context)
 			{
+				if (context.UserVariables[PostInputWasRunKey] != "1")
+				{
+					Util.Log(asset, LoadPostInputNotRunErrorMessage);
+					return;
+				}
+
 				var szSitePath = GetSitePath(asset).AssetPath.ToString();
 
 				var aContentSource = asset;
@@ -2150,16 +2183,18 @@ namespace LocalProject
 
 				var szSourceLanguageId = GetLocaleId(aContentSource, szSitePath, localeConfigCache);
 
+				var reconstructedInputForm = ConvertUserVariablesToInputForm(context.UserVariables);
+
 				if (!string.IsNullOrWhiteSpace(szSourceLanguageId))
 				{
 					var translator = Translation.GetTmfTranslator(asset);
 					var aSourceLanguageContent = Asset.Load(szSourceLanguageId);
-					if (string.Equals(asset.Raw["tmf_selection_type"], "0"))
+					if (string.Equals(reconstructedInputForm["tmf_selection_type"], "0"))
 					{
 						var laConfigList = GetRelList(aContentSource.Id, "source", szSitePath);
 
 						var nIndexPanel = 1;
-						foreach (var peSelectedLangList in asset.GetPanels("tmf_language_selected_panel"))
+						foreach (var peSelectedLangList in reconstructedInputForm.GetPanels("tmf_language_selected_panel"))
 						{
 							if (!string.IsNullOrWhiteSpace(peSelectedLangList.Raw["tmf_language_selected"]))
 							{
@@ -2238,9 +2273,6 @@ namespace LocalProject
 										}
 									}
 
-									asset.DeleteContentField("tmf_language_selected:" + nIndexPanel);
-									asset.DeleteContentField("tmf_language_selected_panel:" + nIndexPanel);
-
 									// Pass a flag back to the frontend to indicate a reload is needed
 									context.ReloadEdit = true;
 								}
@@ -2251,7 +2283,7 @@ namespace LocalProject
 					}
 					else
 					{
-						foreach (var kvpData in asset.GetContent())
+						foreach (var kvpData in reconstructedInputForm.GetContent())
 						{
 							if (kvpData.Key.Contains("tmf_folder_") &&
 									string.Equals(kvpData.Value, "y", StringComparison.OrdinalIgnoreCase))
@@ -2269,7 +2301,7 @@ namespace LocalProject
 
 									var laConfigList = GetRelList(aPackage.Id, "source", szSitePath);
 									var nIndexPanel = 1;
-									foreach (var peSelectedLangList in asset.GetPanels("tmf_language_selected_panel"))
+									foreach (var peSelectedLangList in reconstructedInputForm.GetPanels("tmf_language_selected_panel"))
 									{
 										var aLanguageContent = Asset.Load(peSelectedLangList["tmf_language_selected"]);
 										if (aLanguageContent.IsLoaded)
@@ -2322,14 +2354,14 @@ namespace LocalProject
 					}
 
 					if (!aContentSource.Type.Equals(AssetType.Folder) &&
-							!string.IsNullOrWhiteSpace(asset.Raw["tmf_related_link_internal"]))
+							!string.IsNullOrWhiteSpace(reconstructedInputForm["tmf_related_link_internal"]))
 					{
-						var szContentDestId = Asset.Load(asset.Raw["tmf_related_link_internal"]).Id.ToString();
-						var szSourceId = string.Equals(asset.Raw["tmf_relationship_type"], "1")
+						var szContentDestId = Asset.Load(reconstructedInputForm["tmf_related_link_internal"]).Id.ToString();
+						var szSourceId = string.Equals(reconstructedInputForm["tmf_relationship_type"], "1")
 							? szContentDestId
 							: aContentSource.Id.ToString();
 
-						var szDestinationId = string.Equals(asset.Raw["tmf_relationship_type"], "1")
+						var szDestinationId = string.Equals(reconstructedInputForm["tmf_relationship_type"], "1")
 							? aContentSource.Id.ToString()
 							: szContentDestId;
 						var szLabel = szSourceId + "-" + szDestinationId;
@@ -2349,7 +2381,7 @@ namespace LocalProject
 
 						UpdateRelationshipHistory(aTMFTmpContent, szSitePath);
 
-						if (string.Equals(asset.Raw["tmf_new_notifyowner"], "y", StringComparison.OrdinalIgnoreCase))
+						if (string.Equals(reconstructedInputForm["tmf_new_notifyowner"], "y", StringComparison.OrdinalIgnoreCase))
 						{
 							SendNotificationsToOwners(aContentSource, szContentDestId, context.ClientName, context, szSitePath);
 						}
@@ -2357,12 +2389,10 @@ namespace LocalProject
 						context.ReloadEdit = true;
 					}
 
-					if (string.Equals(asset.Raw["tmf_confirm_translation"], "y", StringComparison.OrdinalIgnoreCase))
+					if (string.Equals(reconstructedInputForm["tmf_confirm_translation"], "y", StringComparison.OrdinalIgnoreCase))
 					{
 						UpdateMasterHistory(aContentSource, szSitePath);
 					}
-
-					ClearTMFHelperValues(asset);
 				}
 			}
 
@@ -2492,6 +2522,38 @@ namespace LocalProject
 			private static void DeleteUnmatchedTranslatedFields(int? parentAssetId, int? translatedAssetId)
 			{
 				Asset.DeleteUnmatchedTranslatedFields(parentAssetId, translatedAssetId);
+			}
+		}
+
+		/// <summary>
+		/// Creates a derivative of InputForm which can be used as if it were a persisted asset.
+		/// </summary>
+		/// <param name="userVariables">UserVariables passed from post_input.aspx.</param>
+		/// <returns>A derivative of InputForm containing TMF-related fields.</returns>
+		private static ReconstructedInputForm ConvertUserVariablesToInputForm(UserVariables userVariables)
+		{
+			var result = new ReconstructedInputForm();
+
+			foreach (KeyValuePair<string, string> kvp in userVariables)
+			{
+				if (kvp.Key.Contains("tmf_"))
+				{
+					result[kvp.Key] = kvp.Value;
+				}
+			}
+
+			return result;
+		}
+
+
+		/// <summary>
+		/// Helper class which avoids having to make InputForm constructor public.
+		/// </summary>
+		private class ReconstructedInputForm : InputForm
+		{
+			public new Dictionary<string, string> GetContent()
+			{
+				return _formFields;
 			}
 		}
 
@@ -2739,13 +2801,13 @@ namespace LocalProject
 				return content;
 			}
       
- 			public static Dictionary<string, string> GetFieldsSkippedForTranslation(Asset asset)
- 			{
+			public static Dictionary<string, string> GetFieldsSkippedForTranslation(Asset asset)
+			{
 				var content = asset.GetContent();
 				var included = GetFieldsForTranslation(asset);
-        
-        		return content.Except(included).ToDictionary(x => x.Key, x => x.Value);
- 			}
+
+				return content.Except(included).ToDictionary(x => x.Key, x => x.Value);
+			}
 
 			private static bool IsRegex(string source)
 			{

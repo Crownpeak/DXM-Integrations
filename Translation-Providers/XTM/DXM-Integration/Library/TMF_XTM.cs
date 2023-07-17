@@ -108,7 +108,7 @@ namespace LocalProject
 			Input.ShowTextBox("Retry Count for Translation Status", XTM_RETRY_COUNT, helpMessage: "How many times to retry before giving up? Zero means keep retrying.");
 			Input.EndControlPanel();
 			Input.StartControlPanel("Versions");
-			Input.ShowMessage("TMF Translations v0.5.2 (2022-11-03)");
+			Input.ShowMessage("TMF Translations v0.6.0 (2023-07-17)");
 			Input.ShowMessage("TMF XTM Integration v0.5.2 (2021-12-10)");
 			Input.EndControlPanel();
 		}
